@@ -25,3 +25,17 @@
         <?php echo $this->formText('openseadragontei_custom_nav_name', get_option('openseadragontei_custom_nav_name')); ?>
     </div>
 </div>
+
+<div class="field">
+    <div>
+      You can choose to override the default search template to return a gallery view with direct links to viewer instances.
+    </div>
+      <br>
+    <div id="openseadragontei_override_search_template" class="two columns alpha">
+        <label for="openseadragontei_override_search_template"><?php echo __('override default search template?'); ?></label>
+    </div>
+    <div class="inputs five columns omega">
+        <?php echo $this->formCheckbox('openseadragontei_override_search_template', null,
+        array('checked' => (bool) get_option('openseadragontei_override_search_template'))); ?>
+    </div>
+</div

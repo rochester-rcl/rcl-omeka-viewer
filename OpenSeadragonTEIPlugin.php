@@ -75,6 +75,8 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   {
     set_option('openseadragontei_override_items_show', (int) (boolean) $_POST['openseadragontei_override_items_show']);
     set_option('openseadragontei_custom_nav_name', $_POST['openseadragontei_custom_nav_name']);
+    set_option('openseadragontei_override_search_template', $_POST['openseadragontei_override_search_template']);
+
   }
 
   public function hookUninstall()
@@ -145,17 +147,23 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   public function filterSearchFormDefaultAction()
   {
     if (is_admin_theme()) {
-      return '/admin/search';
+      return 'admin/search';
     }
-    return '/viewer/search';
+    if (get_option('openseadragontei_override_search_template')) {
+      return 'viewer/search';
+    }
+    return 'items/search';
   }
 
   public function filterItemsSearchDefaultUrl()
   {
     if (is_admin_theme()) {
-      return '/admin/items/search';
+      return 'admin/items/search';
     }
-    return '/viewer/advanced-search';
+    if (get_option('openseadragontei_override_search_template')) {
+      return 'viewer/advanced-search';
+    }
+    return 'items/advanced-search';
   }
 
   private function getAllViewerItemTypes()
@@ -194,7 +202,8 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   public function hookPublicItemsShow($args)
   {
       //put item type logic in view helper
-      echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
+      // Turn this into shortcode 
+      // echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
   }
 
   public function hookDefineRoutes($args)
