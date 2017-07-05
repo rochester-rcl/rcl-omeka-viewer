@@ -15,16 +15,19 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
     this.viewer = OpenSeadragon({
       id: this.name,
       prefixUrl: this.buttonPath,
-      minZoomImageRatio: 0.3,
-      defaultZoomLevel: 0.3,
+      minZoomImageRatio: 0.7,
+      defaultZoomLevel: 0.4,
       maxZoomPixelRatio: 3,
-      animationTime: 1.5,
+      animationTime: 6.0,
       blendTime: 0.5,
       constrainDuringPan: true,
-      springStiffness: 5,
-      visibilityRatio: 0.5,
+      springStiffness: 4,
+      visibilityRatio: 0.8,
       sequenceMode: true,
       showReferenceStrip: true,
+      referenceStripPosition: "BOTTOM_LEFT",
+      referenceStripScroll: 'vertical',
+      referenceStripSizeRatio: 0.05,
       showNavigator:  true,
       navigatorAutoFade:  true,
       tileSources: this.tileSources,
@@ -32,15 +35,19 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
       zoomInButton:   "zoom-in",
       zoomOutButton:  "zoom-out",
       homeButton:     "home",
-      fullPageButton: "full-page",
       nextButton:     "next",
       previousButton: "previous",
       navigatorPosition: "ABSOLUTE",
       navigatorTop:      "60px",
-      navigatorLeft:     "10px",
-      navigatorHeight:   "140px",
-      navigatorWidth:    "245px",
+      navigatorLeft:     this.tileSources.length > 1 ? "100px" : "10px",
+      navigatorHeight:   "12%",
+      navigatorWidth:    "12%",
+      viewportMargins: { right: 250},
+      gestureSettingsMouse: {
+        pinchToZoom: true,
+      }
     });
+
   }
 
   this.paginatorInit = function(imageCount){
