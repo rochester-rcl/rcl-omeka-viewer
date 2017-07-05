@@ -14,7 +14,7 @@ body {
 	position: relative;
 	z-index: 5000;
 	background: #000;
-
+	font-family: inherit;
 }
 
 #primary-nav-viewer .navigation {
@@ -25,7 +25,6 @@ body {
 
 #primary-nav-viewer .navigation li {
 	list-style: none;
-
 	padding: 5px;
 }
 
@@ -35,14 +34,22 @@ body {
 	color: #fff;
 }
 
-#primary-nav-viewer .navigation li ul {
-	display: none;
-}
-
 #viewer-fullpage-container {
 	position: relative;
 	width: 100%;
 	height: 100%;
+}
+
+#primary {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+#content > .openseadragon {
+	width: 100%;
+	height: 40vw;
+	position: relative;
 }
 
 .openseadragon {
@@ -140,7 +147,7 @@ body {
 
 /****METADATA SECTION STYLES****/
 
-#item-metadata {
+.tei-container #item-metadata {
 	top: 0px;
 	opacity: 1;
 	position: absolute;
@@ -155,7 +162,7 @@ body {
 }
 
 
-#item-metadata.hidden{
+.tei-container #item-metadata.hidden{
 	opacity: 0;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
@@ -164,7 +171,7 @@ body {
 	transition: opacity 1s ease-in-out;
 }
 
-#item-metadata.show{
+.tei-container #item-metadata.show{
 	opacity: 1;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
@@ -173,7 +180,7 @@ body {
 	transition: opacity 1s ease-in-out;
 }
 
-.item-metadata-element{
+.tei-container #item-metadata .item-metadata-element{
 	position: relative;
 	display: block;
 	padding: 10px;
@@ -181,13 +188,13 @@ body {
 	color: #fff;
 }
 
-.item-metadata-element h4{
+.tei-container #item-metadata .item-metadata-element h4{
 	position: relative;
 	color: #fff;
 	border-bottom: 1px solid #ccc;
 }
 
-.item-meta-value {
+.tei-container #item-metadata .item-meta-value {
 	height: auto;
 	width: 90%;
 	margin: 1vw;
@@ -374,7 +381,7 @@ body {
 /** TODO put some of this in a custom css file **/
 /** Navigator **/
 .displayregion {
-	border: 2px solid rgb(199, 140, 140) !important;
+	border: 2px solid rgb(100, 100, 100) !important;
 }
 
 /** Lazy Loading on browse page **/
@@ -419,4 +426,31 @@ body {
 
 .item-flexbox-record-link .item-img img:not([src]) {
 	visibility: hidden;
+}
+
+
+/***************** NAV MENU *************************/
+#primary-nav-viewer .navigation li ul li {
+	display: none;
+}
+
+#primary-nav-viewer .navigation li ul .hide {
+	opacity: 0 !important;
+	transition: 0.5s opacity ease-in-out;
+}
+
+#primary-nav-viewer .navigation li ul .show {
+	opacity: 1 !important;
+	border-left: 1px solid rgba(100,100,100, 0.5);
+	transition: 0.5s opacity ease-in-out;
+}
+
+#primary-nav-viewer .navigation li ul .fade-in {
+	display: block;
+	opacity: 0;
+}
+
+#primary-nav-viewer .navigation li ul .fade-out {
+	display: none;
+	opacity: 0;
 }

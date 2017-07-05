@@ -1,5 +1,3 @@
-
-
 <div class="openseadragon" id="openseadragon-viewer-container">
 
       <?php if ($viewer['osdViewer'] === 'video') : ?>

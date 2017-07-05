@@ -29,19 +29,17 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     'uninstall',
     'initialize',
     'define_acl',
-    'public_items_show',
     'config_form',
     'config',
     'public_head',
     'define_routes',
+    'public_items_show'
   );
 
   protected $_filters = array(
     'admin_navigation_main',
     'public_navigation_main',
     'page_caching_whitelist',
-    'search_form_default_action',
-    'items_search_default_url',
   );
 
   protected $_options = array(
@@ -75,8 +73,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   {
     set_option('openseadragontei_override_items_show', (int) (boolean) $_POST['openseadragontei_override_items_show']);
     set_option('openseadragontei_custom_nav_name', $_POST['openseadragontei_custom_nav_name']);
-    set_option('openseadragontei_override_search_template', $_POST['openseadragontei_override_search_template']);
-
   }
 
   public function hookUninstall()
@@ -121,7 +117,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 
   public function filterPublicNavigationMain($nav)
   {
-    if(get_option('openseadragontei_override_items_show')) {
+    if(!get_option('openseadragontei_override_items_show')) {
       $itemTypes = $this->getAllViewerItemTypes();
       $customNav = get_option('openseadragontei_custom_nav_name');
       if($itemTypes) {
@@ -135,36 +131,13 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
         $nav[] = array(
                         'label' => __( $customNav ? $customNav : 'Viewer'),
                         'uri' => '/',
-                        'pages' => $pages,
-          );
+                        'pages' => $pages,);
         }
         return $nav;
-      } else {
-      return;
-    }
+      }
+      return $nav;
   }
 
-  public function filterSearchFormDefaultAction()
-  {
-    if (is_admin_theme()) {
-      return 'admin/search';
-    }
-    if (get_option('openseadragontei_override_search_template')) {
-      return 'viewer/search';
-    }
-    return 'items/search';
-  }
-
-  public function filterItemsSearchDefaultUrl()
-  {
-    if (is_admin_theme()) {
-      return 'admin/items/search';
-    }
-    if (get_option('openseadragontei_override_search_template')) {
-      return 'viewer/advanced-search';
-    }
-    return 'items/advanced-search';
-  }
 
   private function getAllViewerItemTypes()
   {
@@ -201,9 +174,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     */
   public function hookPublicItemsShow($args)
   {
-      //put item type logic in view helper
-      // Turn this into shortcode 
-      // echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
+      if(get_option('openseadragontei_override_items_show') && !is_admin_theme()) {
+        echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
+      }
   }
 
   public function hookDefineRoutes($args)
@@ -215,18 +188,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       array('module'=>'open-seadragon-tei', 'controller'=>'video', 'action'=>'show'));
     $viewerBrowseRoute = new Zend_Controller_Router_Route('viewer/browse/:itemTypeName',
       array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'browse'));
-    $viewerSearchRoute = new Zend_Controller_Router_Route('viewer/search',
-      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'search'));
-    $viewerAdvancedSearchRoute = new Zend_Controller_Router_Route('viewer/advanced-search',
-      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'advanced-search'));
-    $viewerAdvancedSearchResultsRoute = new Zend_Controller_Router_Route('viewer/advanced-search/results',
-      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'results'));
     $router->addRoute('viewer', $viewerRoute);
     $router->addRoute('video', $videoRoute);
     $router->addRoute('viewer-browse', $viewerBrowseRoute);
-    $router->addRoute('viewer-search', $viewerSearchRoute);
-    $router->addRoute('viewer-search-advanced', $viewerAdvancedSearchRoute);
-    $router->addRoute('viewer-search-advanced-results', $viewerAdvancedSearchResultsRoute);
   }
 
   public function filterPageCachingWhitelist($whitelist)
