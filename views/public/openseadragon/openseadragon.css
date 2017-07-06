@@ -18,7 +18,6 @@ body {
 }
 
 #primary-nav-viewer .navigation {
-	display: flex;
 	align-items: flex-start;
 	justify-content: flex-start;
 	padding: 0;
@@ -399,15 +398,12 @@ body {
 	font-size: 18px;
 	text-decoration: none;
 	font-weight: bold;
-	margin: 0 auto;
 }
 
 #primary-nav-viewer .nav-viewer-home-icon img {
-	max-width: 150px;
-	max-height: 150px;
+	max-width: 100px;
+	max-height: 100px;
 }
-
-
 
 #primary-nav-viewer .navigation li {
 	border-left: 2px solid rgba(100, 100, 100, 0.5);
