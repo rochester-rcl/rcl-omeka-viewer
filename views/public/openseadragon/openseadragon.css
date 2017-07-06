@@ -402,6 +402,13 @@ body {
 	margin: 0 auto;
 }
 
+#primary-nav-viewer .nav-viewer-home-icon img {
+	max-width: 300px;
+	max-height: 300px;
+}
+
+
+
 #primary-nav-viewer .navigation li {
 	border-left: 2px solid rgba(100, 100, 100, 0.5);
 	padding: 10px;
