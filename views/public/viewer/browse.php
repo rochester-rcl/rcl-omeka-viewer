@@ -1,15 +1,9 @@
 <?php
 $pageTitle = __($this->browseTitle);
-echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
+//echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
+echo $this->partial('common/header-viewer.php');
 ?>
-
-<h1 class="item-type-title">
-  <?php echo $pageTitle;?>
-  <?php echo __('(%s total)', $total_results); ?>
-</h1>
-
-<nav class="items-nav navigation secondary-nav">
-    <?php echo public_nav_items(); ?>
+<nav class="gallery-sort-filters">
     <?php if ($total_results > 0): ?>
 
     <?php
@@ -17,7 +11,7 @@ echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
     $sortLinks[__('Creator')] = 'Dublin Core,Creator';
     $sortLinks[__('Date Added')] = 'added';
     ?>
-    <div id="sort-links">
+    <div id="gallery-sort-links">
         <span class="sort-label"><?php echo __('Sort by: '); ?></span>
         <?php echo browse_sort_links($sortLinks); ?>
     </div>
@@ -25,6 +19,11 @@ echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
     <?php echo pagination_links(); ?>
     <?php endif; ?>
 </nav>
+<h1 class="item-type-title">
+  <?php echo $pageTitle;?>
+  <?php echo __('(%s total)', $total_results); ?>
+</h1>
+
 <div class="item-type-description">
   <?php echo(get_item_type_meta($items[0])['description']); ?>
 </div>
@@ -35,12 +34,12 @@ echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
  ?>
  <?php if (metadata('item', 'has files')): ?>
   <div class="item-flexbox-record">
+      <span class="item-flexbox-record-title"><?php echo $itemTitle ?></span>
       <a class="item-flexbox-record-link" href="<?php echo $itemURL; ?>">
         <div class="item-img">
             <?php echo lazy_load_image('square_thumbnail', $item); ?>
         </div>
       </a>
-      <span class="item-flexbox-record-title"><?php echo $itemTitle ?></span>
   </div><!-- end class="item hentry" -->
   <?php endif; ?>
   <?php fire_plugin_hook('public_items_browse_each', array('view' => $this, 'item' =>$item)); ?>

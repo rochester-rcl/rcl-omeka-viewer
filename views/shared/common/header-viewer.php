@@ -35,7 +35,59 @@
     <?php fire_plugin_hook('public_body', array('view'=>$this)); ?>
     <div id="primary-nav-viewer" role="navigation">
       <?php
+          echo link_to_home_page(theme_logo(), array("class" => "nav-viewer-home-icon"));
           echo public_nav_main();
       ?>
     </div>
+    <script type="text/javascript">
+      var navContainer = document.getElementById('primary-nav-viewer');
+      var nav = navContainer.getElementsByClassName('navigation');
+      var navItems = nav[0].childNodes;
+      for (var i=0; i < navItems.length; i++) {
+        var element = navItems[i];
+        if (element.nodeType !== Node.TEXT_NODE) {
+          checkDropdown(element);
+        }
+      }
+
+      function checkDropdown(element) {
+        var dropdown = element.getElementsByTagName('ul');
+        if (dropdown.length > 0) {
+            element.className = "hide";
+            element.onclick = function(event) {
+              event.preventDefault();
+              if (element.className !== 'show') {
+                setElementClassNames(dropdown, "fade-in");
+                setTimeout(function() {
+                  element.className =  "show";
+                  setElementClassNames(dropdown, "fade-in show");
+                }, 250);
+              } else {
+                setElementClassNames(dropdown, "hide");
+                setTimeout(function() {
+                  element.className =  "hide";
+                  setElementClassNames(dropdown, "fade-out hide");
+                }, 250);
+              }
+            }
+            for (var i=0; i < dropdown.length; i++) {
+              var children = dropdown[i].getElementsByTagName('li');
+              for (var j=0; j < children.length; j++) {
+                var child = children[j];
+                child.onclick = function(event) {
+                  var links = child.getElementsByTagName('a');
+                  window.location = links[0].href;
+                }
+              }
+            }
+          }
+        }
+
+        function setElementClassNames(elements, className) {
+          for (var i=0; i < elements.length; i++) {
+            var element = elements[i];
+            element.className = className;
+          }
+        }
+    </script>
 <div id="viewer-fullpage-container">
