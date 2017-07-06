@@ -185,3 +185,14 @@ function get_featured_encounters($numEncounters)
   }
   return implode($encounterMarkupArray);
 }
+
+function check_files($item)
+{
+  return metadata($item, 'has files') === TRUE;
+}
+
+function total_gallery_items($items)
+{
+  $galleryItems = array_filter($items, 'check_files');
+  return sizeof($galleryItems);
+}

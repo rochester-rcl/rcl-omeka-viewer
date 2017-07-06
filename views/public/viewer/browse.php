@@ -21,7 +21,7 @@ echo $this->partial('common/header-viewer.php');
 </nav>
 <h1 class="item-type-title">
   <?php echo $pageTitle;?>
-  <?php echo __('(%s total)', $total_results); ?>
+  <?php echo __('(%s total)', total_gallery_items($items)); ?>
 </h1>
 
 <div class="item-type-description">
