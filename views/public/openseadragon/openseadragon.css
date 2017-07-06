@@ -10,30 +10,6 @@ body {
 	height: 100%;
 }
 
-#primary-nav-viewer {
-	position: relative;
-	z-index: 5000;
-	background: #000;
-	font-family: inherit;
-}
-
-#primary-nav-viewer .navigation {
-	align-items: flex-start;
-	justify-content: flex-start;
-	padding: 0;
-}
-
-#primary-nav-viewer .navigation li {
-	list-style: none;
-	padding: 5px;
-	font-size: 16px;
-}
-
-#primary-nav-viewer .navigation li a {
-	text-decoration: none;
-	color: #fff;
-}
-
 #viewer-fullpage-container {
 	position: relative;
 	width: 100%;
@@ -389,7 +365,27 @@ body {
 /***************** NAV MENU *************************/
 
 #primary-nav-viewer {
+	position: relative;
+	z-index: 5000;
+	background: #000;
+	font-family: inherit;
 	display: flex;
+}
+
+#primary-nav-viewer .navigation {
+	position: relative;
+	top: 20px;
+}
+
+#primary-nav-viewer .navigation li {
+	list-style: none;
+	padding: 5px;
+	font-size: 16px;
+}
+
+#primary-nav-viewer .navigation li a {
+	text-decoration: none;
+	color: #fff;
 }
 
 #primary-nav-viewer .nav-viewer-home-icon {
@@ -401,8 +397,8 @@ body {
 }
 
 #primary-nav-viewer .nav-viewer-home-icon img {
-	max-width: 100px;
-	max-height: 100px;
+	max-width: 120px;
+	max-height: 120px;
 }
 
 #primary-nav-viewer .navigation li {
