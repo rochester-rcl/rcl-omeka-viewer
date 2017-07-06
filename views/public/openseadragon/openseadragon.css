@@ -60,7 +60,8 @@ body {
 
 .referencestrip {
 	z-index: 5 !important;
-	padding-top: 50px;
+	top: 60px !important;
+	background: none !important;
 }
 
 .navigator-container{
