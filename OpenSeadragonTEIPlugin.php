@@ -91,6 +91,8 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   {
       add_translation_source(dirname(__FILE__) . '/languages');
       get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'OpenSeadragonTEI_View_Helper');
+      add_shortcode('video_player', array($this, 'get_video_player'));
+
   }
 
   public function hookDefineAcl($args)
@@ -182,8 +184,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   public function hookDefineRoutes($args)
   {
     $router = $args['router'];
-    $viewerRoute = new Zend_Controller_Router_Route('viewer/:id',
-      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'show'));
+    $viewerRoute = new Zend_Controller_Router_Route('viewer/:id/:page',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'show', 'page' => 1));
+
     $videoRoute = new Zend_Controller_Router_Route('video/:id',
       array('module'=>'open-seadragon-tei', 'controller'=>'video', 'action'=>'show'));
     $viewerBrowseRoute = new Zend_Controller_Router_Route('viewer/browse/:itemTypeName',
@@ -220,6 +223,13 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       queue_js_file('openseadragon_tei', 'openseadragon');
       queue_js_url("https://use.fontawesome.com/aadd731529.js");
       queue_js_file('lazyload.min', 'lazyload');
+  }
+
+  public function get_video_player($args, $view)
+  {
+    $videoUrl = $args['url'];
+    $mime = $args['mime'];
+    echo $view->partial('common/video-viewer.php', array('videoUrl' => $videoUrl, 'mime' => $mime));
   }
 }
 

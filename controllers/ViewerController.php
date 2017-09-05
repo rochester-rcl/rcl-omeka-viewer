@@ -12,12 +12,14 @@ class OpenSeadragonTEI_ViewerController extends Omeka_Controller_AbstractActionC
   public function showAction()
   {
     $itemId = $this->getParam('id');
+    $page = $this->getParam('page');
     $item = $this->_helper->db->getTable('Item')->find($itemId);
     if($item){
       $files = $item->getFiles();
       $this->view->files = $files;
       $this->view->itemTypeId = $item->item_type_id;
       $this->view->item = $item;
+      $this->view->page = $page;
     }
   }
 

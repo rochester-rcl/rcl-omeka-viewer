@@ -71,7 +71,7 @@
           case 'tei':
             osdViewer.openSeadragonInit();
             OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name);
-            osdViewer.paginatorInit(osdViewer.imageCount, mode='tei');
+            osdViewer.paginatorInit(osdViewer.imageCount);
             break;
           case 'image':
             osdViewer.openSeadragonInit();
@@ -79,12 +79,13 @@
               osdViewer.addAudioPlayer();
             }
             OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
-            osdViewer.paginatorInit(osdViewer.imageCount, mode='image');
+            osdViewer.paginatorInit(osdViewer.imageCount);
             break;
         }
         function navBack() {
           window.history.back();
         }
+        osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
       </script>
     <?php endif; ?>
 </div>
