@@ -120,14 +120,14 @@ body {
 
 
 .pb {
-	top: 0 !important;
+	top: 0;
 	left: 0;
-	bottom: 0!important;
+	bottom: 0;
 	width: 100%;
-	padding: 60px 31px!important;
+	padding: 60px 30px;
 	height: auto;
 	/* overflow: auto; */
-	border: none!important;
+	border: none;
 	font-size: 17px;
 }
 
@@ -145,9 +145,12 @@ body {
   -ms-transition: opacity 1s ease-in-out;
   -o-transition: opacity 1s ease-in-out;
 	transition: opacity 1s ease-in-out;
-	backgrond-color: rgba(33,33,31,0.9);
+	background-color: rgba(33,33,31,0.9);
 }
 
+#item-metadata:first-child {
+	padding-top: 60px;
+}
 
 #item-metadata.hidden{
 	opacity: 0;
