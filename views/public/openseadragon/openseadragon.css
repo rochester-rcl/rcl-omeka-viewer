@@ -148,10 +148,6 @@ body {
 	background-color: rgba(33,33,31,0.9);
 }
 
-#item-metadata-element {
-	padding-top: 60px;
-}
-
 #item-metadata.hidden{
 	opacity: 0;
 	-webkit-transition: opacity 1s ease-in-out;
@@ -173,7 +169,7 @@ body {
 #item-metadata .item-metadata-element{
 	position: relative;
 	display: block;
-	padding: 10px;
+	padding-top: 60px;
 	margin-left: 5px;
 	color: #fff;
 	font-size: 15px;
