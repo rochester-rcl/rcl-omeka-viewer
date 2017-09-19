@@ -129,6 +129,7 @@ body {
 		background-color: #fff;
 		overflow-y: scroll;
 		border-right: 1px solid #ccc;
+		color: rgb(33,33,31);
 }
 
 /****METADATA SECTION STYLES****/
