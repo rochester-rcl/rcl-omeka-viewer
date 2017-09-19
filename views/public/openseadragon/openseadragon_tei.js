@@ -50,13 +50,13 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
         var pageCount = document.getElementById('page-count');
         for(var i = 0; i < pages.length; i++){
           var pageNumber = pages[i].dataset.pageNumber;
-          pageCount.childNodes[0].innerHTML = 'Page ' + (data.page + 1) + ' of ' + imageCount;
           if (pageNumber == data.page){
             pages[i].style.display = 'block';
           } else {
             pages[i].style.display = 'none';
           }
         }
+        pageCount.childNodes[0].innerHTML = 'Page ' + (data.page + 1) + ' of ' + imageCount;
       });
     } else {
       this.viewer.addHandler("page", function (data) {
