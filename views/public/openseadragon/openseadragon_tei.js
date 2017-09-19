@@ -15,13 +15,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
     this.viewer = OpenSeadragon({
       id: this.name,
       prefixUrl: this.buttonPath,
-      minZoomImageRatio: 0.7,
-      defaultZoomLevel: 0.4,
-      maxZoomPixelRatio: 3,
-      animationTime: 6.0,
-      blendTime: 0.5,
       constrainDuringPan: true,
-      springStiffness: 4,
       visibilityRatio: 0.8,
       sequenceMode: true,
       showReferenceStrip: true,
@@ -42,7 +36,6 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
       navigatorLeft:     this.tileSources.length > 1 ? "100px" : "10px",
       navigatorHeight:   "12%",
       navigatorWidth:    "12%",
-      viewportMargins: { right: 250},
       gestureSettingsMouse: {
         pinchToZoom: true,
       }
@@ -182,24 +175,26 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
 OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId){
   OpenSeadragonTEIViewer.setLoadingScreen();
   self.onSaxonLoad = function() {
-    // Parse Attached XML
-    var xsl = Saxon.requestXML(xslURL);
-    var xml = Saxon.requestXML(xmlURL);
-    var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);
-    // Set up metadata display
-    var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
-    // Set up TEI display
-    var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(transformed);
+      // Parse Attached XML
+      var xsl = Saxon.requestXML(xslURL);
+      var xml = Saxon.requestXML(xmlURL);
+      var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);
+      // Set up metadata display
+      var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
+      // Set up TEI display
+      var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(transformed);
 
-    var container = document.createElement('div');
+      var container = document.createElement('div');
       container.className = 'tei-container';
-      container.appendChild(transcriptionPanel.transcriptionToggleButton);
-      container.appendChild(metadataPanel.metadataToggleButton);
-      container.appendChild(transcriptionPanel.transcriptionElement);
-      container.appendChild(metadataPanel.metadataElement);
-      //var viewer = document.getElementById(viewerId);
-      var viewer = document.getElementsByClassName('openseadragon');
-      viewer[0].appendChild(container);
+      var toolbar = document.getElementById('viewer-controls');
+      toolbar.appendChild(metadataPanel.metadataToggleButton);
+      toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
+
+      var viewer = document.getElementById('osd-flex-container');
+      viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
+      viewer.appendChild(metadataPanel.metadataElement);
+      //var viewer = document.getElementsByClassName('openseadragon');
+      //viewer.appendChild(container);
       //viewer.insertBefore(container, viewer.childNodes[0]);
       OpenSeadragonTEIViewer.prepareViewerFirstPage();
       var personElements = document.getElementsByClassName('persname-popover');
@@ -232,6 +227,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       setTimeout(function() {
         modalDisplay.classList.add('show');
       }, 50);
+
       modalDisplay.classList.add(displayType);
       modalDisplay.addEventListener("transitionend", function(event) {
         var parent = modalDisplay.parentElement;
@@ -239,6 +235,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
            parent.removeChild(modalDisplay);
         }
       });
+
       closeButton.onclick = function() {
         modalDisplay.classList.remove('show');
         modalDisplay.classList.add('remove');
@@ -351,8 +348,9 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     display.className = 'tei-viewer';
     display.id = 'item-transcription';
     display.innerHTML = transformedDOM;
-    var transcriptionToggle = document.createElement('span');
+    var transcriptionToggle = document.createElement('div');
     transcriptionToggle.id = 'toggle-transcription';
+    transcriptionToggle.className = 'toolbar-button';
     transcriptionToggle.onclick = function() {OpenSeadragonTEIViewer.togglePanel("item-transcription", 'toggle-transcription',
                                             ['Hide Transcription ', 'Show Transcription '],
                                             ['<i class="fa fa-minus-square" aria-hidden="true"></i>',
@@ -380,7 +378,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     }
   }
   OpenSeadragonTEIViewer.setLoadingScreen = function() {
-    var primary = document.getElementById('primary');
+    var primary = document.getElementById('viewer-fullpage-container');
     var loadingOverlay = document.createElement('div');
     var loadingMessage = document.createElement('div');
     loadingOverlay.id = 'loading-overlay-container';

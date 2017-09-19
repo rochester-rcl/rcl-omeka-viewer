@@ -59,33 +59,33 @@
           <div class="toolbar-button" id="next"><i class="fa fa-chevron-right fa-2x" aria-hidden="true"></i></div>
           <div class="toolbar-button" id="page-count"><span>Page 1 of <?=$viewer['imageCount']?></span></div>
       </div>
-
-      <div class="openseadragon_viewer" id="<?=$viewer['name']?>">
-
-          <img src="<?=$viewer['tempImage']?>" class="openseadragon-image tmp-img" alt="">
+      <div class="openseadragon-flex-container" id="osd-flex-container">
+        <div class="openseadragon_viewer" id="<?=$viewer['name']?>">
+            <img src="<?=$viewer['tempImage']?>" class="openseadragon-image tmp-img" alt="">
+        </div>
+        <script type="text/javascript">
+          //Viewer
+          var osdViewer = new OpenSeadragonTEIViewer(<?=$jsonViewer?>);
+          switch(osdViewer.osdViewerType){
+            case 'tei':
+              osdViewer.openSeadragonInit();
+              OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name);
+              osdViewer.paginatorInit(osdViewer.imageCount);
+              break;
+            case 'image':
+              osdViewer.openSeadragonInit();
+              if(osdViewer.audioFile !== null) {
+                osdViewer.addAudioPlayer();
+              }
+              OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
+              osdViewer.paginatorInit(osdViewer.imageCount);
+              break;
+          }
+          function navBack() {
+            window.history.back();
+          }
+          osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
+        </script>
       </div>
-      <script type="text/javascript">
-        //Viewer
-        var osdViewer = new OpenSeadragonTEIViewer(<?=$jsonViewer?>);
-        switch(osdViewer.osdViewerType){
-          case 'tei':
-            osdViewer.openSeadragonInit();
-            OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name);
-            osdViewer.paginatorInit(osdViewer.imageCount);
-            break;
-          case 'image':
-            osdViewer.openSeadragonInit();
-            if(osdViewer.audioFile !== null) {
-              osdViewer.addAudioPlayer();
-            }
-            OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
-            osdViewer.paginatorInit(osdViewer.imageCount);
-            break;
-        }
-        function navBack() {
-          window.history.back();
-        }
-        osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
-      </script>
     <?php endif; ?>
 </div>

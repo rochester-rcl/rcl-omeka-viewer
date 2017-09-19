@@ -34,16 +34,24 @@ body {
 	height: 100%;
 	position: relative;
 	background-color: #000;
+	overflow-y: hidden;
+}
+
+.openseadragon-flex-container {
+	position: relative;
+	display: flex;
+	width: 100%;
+	height: 100%;
+	align-items: center;
 }
 
 .openseadragon_viewer {
 	width: 100%;
 	height: 100%;
-	clear: both;
 	background: #000;
-	overflow-x: hidden !important;
-	position:absolute;
 	top: 0px;
+	position: relative;
+	flex: 0.6;
 }
 
 .openseadragon_viewer .tmp-img {
@@ -90,12 +98,11 @@ body {
 
 .tei-viewer{
 		display: block;
-    position: absolute;
     z-index: 3;
-		width: 25%;
+		width: 100%;
 		height: 100%;
-		background: #141413;
-
+		flex: 0.3;
+		background-color: rgba(33,33,31,0.9);
 }
 
 #tei-viewer.hidden{
@@ -126,22 +133,23 @@ body {
 
 /****METADATA SECTION STYLES****/
 
-.tei-container #item-metadata {
-	top: 0px;
+#item-metadata {
 	opacity: 1;
-	position: absolute;
-	right: 0px;
+	position: relative;
 	height: 100%;
+	width: 100%;
+	flex: 0.3;
 	overflow-y: scroll;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
   -ms-transition: opacity 1s ease-in-out;
   -o-transition: opacity 1s ease-in-out;
 	transition: opacity 1s ease-in-out;
+	backgrond-color: rgba(33,33,31,0.9);
 }
 
 
-.tei-container #item-metadata.hidden{
+#item-metadata.hidden{
 	opacity: 0;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
@@ -150,7 +158,7 @@ body {
 	transition: opacity 1s ease-in-out;
 }
 
-.tei-container #item-metadata.show{
+#item-metadata.show{
 	opacity: 1;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
@@ -159,18 +167,24 @@ body {
 	transition: opacity 1s ease-in-out;
 }
 
-.tei-container #item-metadata .item-metadata-element{
+#item-metadata .item-metadata-element{
 	position: relative;
 	display: block;
 	padding: 10px;
 	margin-left: 5px;
 	color: #fff;
+	font-size: 15px;
 }
 
-.tei-container #item-metadata .item-metadata-element h4{
+#item-metadata .item-metadata-element h4{
 	position: relative;
-	color: #fff;
-	border-bottom: 1px solid #ccc;
+	color: #9e9e9e;
+	font-size: 13px;
+	/* border-bottom: 1px solid #ccc; */
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	/* padding: 5px 0!important; */
+	margin: 0px 0!important;
+	text-transform: uppercase;
 }
 
 .tei-container #item-metadata .item-meta-value {
@@ -188,19 +202,15 @@ body {
 
 .toolbar {
     position: relative;
+		text-align: center;
 		width: 100%;
 		height: auto;
 		display: block;
 		color: #fff;
 		margin: 0 auto;
+		font-size: 15px;
 		top: 0px;
-		left: 0px;
-		font-size: 0.9vw;
-		/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+0,000000+100&0.65+0,0+100;Neutral+Density */
-		background: -moz-linear-gradient(top,  rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
-		background: -webkit-linear-gradient(top,  rgba(0,0,0,0.95) 0%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
-		background: linear-gradient(to bottom,  rgba(0,0,0,0.95) 0%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+		border-bottom: 1px solid #141413;
 }
 
 .toolbar div {
@@ -212,7 +222,7 @@ body {
 	display: inline-block;
 	cursor: pointer;
 }
-#toggle-metadata {
+#toggle-metadata, #toggle-transcription {
 	color: #fff;
 	visibility: visible;
 	position: relative;
@@ -231,15 +241,6 @@ body {
     display: block;
     position: relative;
 }
-
-#toggle-transcription {
-	color: #fff;
-	visibility: visible;
-	padding-left: 20px;
-	position: absolute;
-	z-index: 6;
-}
-
 
 /*** Modal Display ***/
 .modal-display {
