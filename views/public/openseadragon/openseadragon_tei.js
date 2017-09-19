@@ -191,6 +191,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
 
       var viewer = document.getElementById('osd-flex-container');
+
       viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
       viewer.appendChild(metadataPanel.metadataElement);
       //var viewer = document.getElementsByClassName('openseadragon');
@@ -295,13 +296,10 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
 
   OpenSeadragonTEIViewer.imageViewerInit = function(itemMetadata, viewerId){
     var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
-    var container = document.createElement('div');
+    var container = document.getElementById('osd-flex-container');
     var toolbar = document.getElementById('viewer-controls');
-    container.className = 'tei-container';
     toolbar.appendChild(metadataPanel.metadataToggleButton);
     container.appendChild(metadataPanel.metadataElement);
-    var viewer = document.getElementsByClassName('openseadragon');
-    viewer[0].appendChild(container);
   }
 
   OpenSeadragonTEIViewer.transformToHTML = function(xml, xsl){
