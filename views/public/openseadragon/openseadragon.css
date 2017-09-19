@@ -120,16 +120,15 @@ body {
 
 
 .pb {
-    position: relative;
-    padding: 20px;
-		left: 10px;
-		width: 95%;
-    height: 80%;
-		top: 20px;
-		background-color: #fff;
-		overflow-y: scroll;
-		border-right: 1px solid #ccc;
-		color: rgb(33,33,31);
+	top: 0 !important;
+	left: 0;
+	bottom: 0!important;
+	width: 100%;
+	padding: 60px 31px!important;
+	height: auto;
+	/* overflow: auto; */
+	border: none!important;
+	font-size: 17px;
 }
 
 /****METADATA SECTION STYLES****/
