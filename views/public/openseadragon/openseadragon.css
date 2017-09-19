@@ -148,7 +148,7 @@ body {
 	background-color: rgba(33,33,31,0.9);
 }
 
-#item-metadata-element:first-child {
+#item-metadata-element {
 	padding-top: 60px;
 }
 
