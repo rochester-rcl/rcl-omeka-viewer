@@ -70,8 +70,8 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
     $form->addElement('checkbox', 'xsl_viewer_option', array(
         'label' => __('Use an XSLT File for Rendering'),
         'description' => 'Check this box to add a rendering component for attached XML files.',
-        'checkedValue' => 'true',
-        'uncheckedValue' => 'false',
+        'checked_value' => 1,
+        'unchecked_value' => 0,
         'checked' => $checkedState,
       ));
       if($viewer->override_items_show_option == 1){
@@ -83,8 +83,8 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
         'label' => __('Override Items Show Template'),
         'description' => 'Check this box to override the current theme\'s items show template.
                           Leaving it unchecked will create views at mysite/viewer/itemtype/itemid.',
-        'checkedValue' => 'true',
-        'uncheckedValue' => 'false',
+        'checked_value' => 1,
+        'unchecked_value' => 0,
         'checked' => $itemsShowCheckedState,
       ));
 
@@ -185,7 +185,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
         $viewerName = $form->viewer_name->getValue();
         $viewerItemType = $form->item_type->getValue();
         $xslOption = $form->xsl_viewer_option->getValue();
-        $viewer->override_items_show_option = $overrideItemsShowOption;
+        $overrideItemsShowOption = $form->override_items_show_option->getValue();
 
         $viewer->viewer_name = $viewerName;
         $viewer->item_type_id = $viewerItemType;

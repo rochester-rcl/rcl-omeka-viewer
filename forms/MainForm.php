@@ -46,8 +46,8 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
       'label' => __('Override Items Show Template'),
       'description' => 'Check this box to override the current theme\'s items show template.
                         Leaving it unchecked will create views at mysite/viewer/itemtype/itemid.',
-      'checkedValue' => 1,
-      'uncheckedValue' => 0,
+      'checked_value' => 1,
+      'unchecked_value' => 0,
     ));
   }
   protected function _addCheckboxElement()
@@ -55,8 +55,8 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     $this->addElement('checkbox', 'xsl_viewer_option', array(
       'label' => __('Use an XSLT File for Rendering'),
       'description' => 'Check this box to add a rendering component for attached XML files.',
-      'checkedValue' => 1,
-      'uncheckedValue' => 0,
+      'checked_value' => 1,
+      'unchecked_value' => 0,
     ));
   }
 
