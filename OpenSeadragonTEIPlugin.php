@@ -212,17 +212,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 
   public function hookPublicHead()
   {
-      queue_js_file('Saxonce.nocache', 'Saxon-CE/Saxonce');
-      queue_css_file('openseadragon', 'screen', false, 'openseadragon');
-      queue_js_file('video.min', 'videojs');
-      queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
-      queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
-      queue_css_file('video-js');
-      queue_css_file('player-custom');
-      queue_js_file('openseadragon.min', 'openseadragon');
-      queue_js_file('openseadragon_tei', 'openseadragon');
-      queue_js_url("https://use.fontawesome.com/aadd731529.js");
-      queue_js_file('lazyload.min', 'lazyload');
+      
   }
 
   public function get_video_player($args, $view)

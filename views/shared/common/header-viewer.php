@@ -20,11 +20,22 @@
     <?php fire_plugin_hook('public_head',array('view'=>$this)); ?>
     <!-- Stylesheets -->
     <?php
+    queue_css_file('openseadragon', 'screen', false, 'openseadragon');
     queue_css_file(array('iconfonts', 'skeleton','style'));
-
+    queue_css_file('video-js');
+    queue_css_file('player-custom');
     echo head_css();
     ?>
-
+    <?php
+      queue_js_file('Saxonce.nocache', 'Saxon-CE/Saxonce');
+      queue_js_file('video.min', 'videojs');
+      queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
+      queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
+      queue_js_file('openseadragon.min', 'openseadragon');
+      queue_js_file('openseadragon_tei', 'openseadragon');
+      queue_js_url("https://use.fontawesome.com/aadd731529.js");
+      queue_js_file('lazyload.min', 'lazyload');
+    ?>
     <?php queue_js_file('vendor/selectivizr', 'javascripts', array('conditional' => '(gte IE 6)&(lte IE 8)')); ?>
     <?php queue_js_file('vendor/respond'); ?>
     <?php queue_js_file('vendor/jquery-accessibleMegaMenu'); ?>
