@@ -502,6 +502,7 @@ body {
 	justify-content: center;
 	position: relative;
 	display: flex;
+	flex-wrap: wrap;
 	padding-top: 30px;
 	width: 80%;
 	margin: 0 auto;
