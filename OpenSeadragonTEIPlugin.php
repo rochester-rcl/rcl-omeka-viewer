@@ -40,6 +40,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     'admin_navigation_main',
     'public_navigation_main',
     'page_caching_whitelist',
+    'exhibit_layouts',
   );
 
   protected $_options = array(
@@ -115,6 +116,26 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
           'privilege' => 'index',
       );
       return $nav;
+  }
+
+  public function filterExhibitLayouts($layouts)
+  {
+    $layouts['osd-file'] = array(
+      'name' => 'OpenSeadragon File Layout',
+      'description' => 'Adds a link to the OSD viewer from a layout',
+    );
+
+    $layouts['osd-file-text'] = array(
+      'name' => 'OpenSeadragon File & Text Layout',
+      'description' => 'Adds a link to the OSD viewer from a layout, along with room for text',
+    );
+
+    $layouts['osd-gallery'] = array(
+      'name' => 'OpenSeadragon Gallery Layout',
+      'description' => 'Adds a link to the OSD viewer from a Gallery layout',
+    );
+
+    return $layouts;
   }
 
   public function filterPublicNavigationMain($nav)
@@ -212,7 +233,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 
   public function hookPublicHead()
   {
-      
+
   }
 
   public function get_video_player($args, $view)

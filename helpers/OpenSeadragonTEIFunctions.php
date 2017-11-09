@@ -196,3 +196,27 @@ function total_gallery_items($items)
   $galleryItems = array_filter($items, 'check_files');
   return sizeof($galleryItems);
 }
+
+function osd_viewer_layout_link($attachment, $imageType)
+{
+  $uri = url('viewer/' . $attachment->item_id);
+  $file = $attachment->getFile();
+  $imageTag = file_image($imageType, array('class' => 'osd-viewer-thumbnail'), $file);
+  return '<a href="' . $uri . '" class="osd-viewer-image-link">' . $imageTag . '</a>';
+}
+
+function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $linkProps = array())
+{
+  if (!isset($fileOptions['imageSize'])) {
+    $fileOptions['imageSize'] = 'square_thumbnail';
+  }
+  $html = '';
+  foreach ($attachments as $attachment) {
+    $html .= '<div class="exhibit-item exhibit-gallery-item">';
+    $html .= osd_viewer_layout_link($attachment, $fileOptions['imageSize']);
+    $html .= '</div>';
+  }
+
+  return apply_filters('exhibit_attachment_gallery_markup', $html,
+    compact('attachments', 'fileOptions', 'linkProps'));
+}
