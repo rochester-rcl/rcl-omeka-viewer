@@ -86,7 +86,7 @@
               for (var j=0; j < children.length; j++) {
                 var child = children[j];
                 child.onclick = function(event) {
-                  var links = child.getElementsByTagName('a');
+                  var links = this.getElementsByTagName('a');
                   window.location = links[0].href;
                 }
               }

@@ -371,7 +371,7 @@ body {
 #primary-nav-viewer {
 	position: relative;
 	z-index: 5000;
-	background: #000;
+	background: rgb(40,40,40);
 	font-family: inherit;
 	display: flex;
 	align-items: center;
@@ -379,6 +379,8 @@ body {
 
 #primary-nav-viewer .navigation {
 	position: relative;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 #primary-nav-viewer .navigation li {
@@ -406,7 +408,7 @@ body {
 }
 
 #primary-nav-viewer .navigation li {
-	border-left: 2px solid rgba(100, 100, 100, 0.5);
+	border-left: 3px solid rgba(100, 100, 100, 0.5);
 	padding: 10px;
 }
 
@@ -414,7 +416,7 @@ body {
 	position: absolute;
 	display: none;
 	margin: 0;
-	background-color: rgba(0, 0, 0, 0.5);
+	background-color: rgb(40, 40, 40);
 }
 
 #primary-nav-viewer .navigation li ul.hide {
@@ -427,8 +429,16 @@ body {
 	transition: 0.5s opacity ease-in-out;
 }
 
+#primary-nav-viewer .navigation li ul.show li {
+	border: none;
+}
+
 #primary-nav-viewer .navigation li ul.fade-in {
-	display: block;
+	display: flex;
+	padding: 0px;
+	flex-direction: column;
+	margin-top: 10px;
+	border-radius: 1px;
 	opacity: 0;
 }
 
@@ -441,6 +451,7 @@ body {
 	color: #fff;
 	padding-bottom: 5px;
 }
+
 
 /**************** Gallery Browse ********************/
 
