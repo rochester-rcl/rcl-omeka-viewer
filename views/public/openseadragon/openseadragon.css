@@ -169,10 +169,20 @@ body {
 #item-metadata .item-metadata-element{
 	position: relative;
 	display: block;
-	padding-top: 60px;
+	padding: 10px;
 	margin-left: 5px;
 	color: #fff;
 	font-size: 15px;
+}
+
+#item-metadata .item-metadata-element:nth-child(1) .item-meta-head {
+	display: none;
+}
+
+#item-metadata .item-metadata-element:nth-child(1) .item-meta-value {
+	font-size: 20px;
+	font-weight: bold;
+	padding-top: 30px;
 }
 
 #item-metadata .item-metadata-element h4{
