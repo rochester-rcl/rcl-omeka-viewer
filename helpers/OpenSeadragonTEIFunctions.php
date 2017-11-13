@@ -202,7 +202,15 @@ function osd_viewer_layout_link($attachment, $imageType)
   $uri = url('viewer/' . $attachment->item_id);
   $file = $attachment->getFile();
   $imageTag = file_image($imageType, array('class' => 'osd-viewer-thumbnail'), $file);
-  return '<a href="' . $uri . '" class="osd-viewer-image-link">' . $imageTag . '</a>';
+  if ($imageTag) {
+    $html = '<a href="' . $uri . '" class="osd-viewer-image-link">' . $imageTag . '</a>';
+  }
+
+  if (isset($html)) {
+      $html .= osd_exhibit_attachment_caption($attachment);
+  }
+
+  return apply_filters('exhibit_attachment_markup', $html, compact('attachment', 'fileOptions', 'linkProps', 'forceImage'));
 }
 
 function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $linkProps = array())
@@ -219,4 +227,17 @@ function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $l
 
   return apply_filters('exhibit_attachment_gallery_markup', $html,
     compact('attachments', 'fileOptions', 'linkProps'));
+}
+
+function osd_exhibit_attachment_caption($attachment)
+{
+  if (!is_string($attachment['caption']) || $attachment['caption'] == '') {
+            return '';
+  }
+  $html = '<div class="exhibit-item-caption">'
+    . $attachment['caption']
+    . '</div>';
+  return apply_filters('exhibit_attachment_caption', $html, array(
+    'attachment' => $attachment
+  ));
 }
