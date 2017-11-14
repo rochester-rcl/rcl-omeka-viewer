@@ -90,6 +90,7 @@ body {
 
 #item-transcription{
 	opacity: 1;
+	overflow-y: scroll;
 }
 
 .hiddenHeader {
@@ -136,20 +137,17 @@ body {
 #item-metadata {
 	opacity: 1;
 	position: relative;
+	display: block;
 	height: 100%;
 	width: 100%;
 	flex: 0.5;
 	overflow-y: scroll;
-	-webkit-transition: opacity 1s ease-in-out;
-  -moz-transition: opacity 1s ease-in-out;
-  -ms-transition: opacity 1s ease-in-out;
-  -o-transition: opacity 1s ease-in-out;
-	transition: opacity 1s ease-in-out;
 	background-color: rgba(33,33,31,0.9);
 }
 
-#item-metadata.hidden{
+#item-metadata.hidden {
 	opacity: 0;
+	display: none;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
   -ms-transition: opacity 1s ease-in-out;
@@ -159,6 +157,7 @@ body {
 
 #item-metadata.show{
 	opacity: 1;
+	display: block;
 	-webkit-transition: opacity 1s ease-in-out;
   -moz-transition: opacity 1s ease-in-out;
   -ms-transition: opacity 1s ease-in-out;
