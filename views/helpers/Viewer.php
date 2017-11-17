@@ -109,6 +109,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
         return;
       }
     }
+    
     public function getViewer($item_type_id)
     {
       $viewer = open_seadragon_tei_get_viewer($item_type_id);

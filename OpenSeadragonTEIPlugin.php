@@ -204,12 +204,13 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
         $helper->_supportedDocExtensions,
         $helper->_supportedAudioExtensions);
 
-
       if(get_option('openseadragontei_override_items_show') && !is_admin_theme()) {
         $viewerInfo = open_seadragon_tei_get_viewer($args['item']->item_type_id);
-        if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
-          header("Location: " . url('viewer/' . $args['item']->id));
-          exit;
+        if (check_files($args['item'])) {
+          if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
+            header("Location: " . url('viewer/' . $args['item']->id));
+            exit;
+          }
         }
       }
       // to append to items show
