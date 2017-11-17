@@ -3,11 +3,13 @@
 class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
 {
 
-  protected $_supportedImageExtensions = array('bmp', 'gif', 'ico', 'jpeg', 'jpg',
+  public $_supportedImageExtensions = array('bmp', 'gif', 'ico', 'jpeg', 'jpg',
                                           'png', 'tiff', 'tif', );
-  protected $_supportedVideoExtensions = array('webm', 'mp4', 'ogv', 'ogg');
+  public $_supportedVideoExtensions = array('webm', 'mp4', 'ogv', 'ogg');
 
-  protected $_supportedAudioExtensions = array('mp3');
+  public $_supportedAudioExtensions = array('mp3');
+
+  public $_supportedDocExtensions = array('xml');
 
 
   /**

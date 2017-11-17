@@ -20,16 +20,19 @@ function open_seadragon_tei_get_item_types(){
 
 function open_seadragon_tei_get_viewer($item_type_id)
 {
-  $db = get_db();
-  $select = $db->select()
-  ->from('omeka_open_seadragon_tei_viewers')
-  ->where('item_type_id = '.$item_type_id);
+  if ($item_type_id) {
+    $db = get_db();
+    $select = $db->select()
+    ->from('omeka_open_seadragon_tei_viewers')
+    ->where('item_type_id = '.$item_type_id);
 
-  $stmt = $db->query($select);
-  $result = $stmt->fetchAll();
+    $stmt = $db->query($select);
+    $result = $stmt->fetchAll();
 
-  return $result;
-
+    return $result;
+  } else {
+    return array();
+  }
 }
 
 function open_seadragon_tei_transform_xml($xmlFileUrl, $xslFileUrl)
@@ -211,6 +214,17 @@ function osd_viewer_layout_link($attachment, $imageType)
   }
 
   return apply_filters('exhibit_attachment_markup', $html, compact('attachment', 'fileOptions', 'linkProps', 'forceImage'));
+}
+
+function validate_extensions($files, $extensions)
+{
+  foreach($files as $file) {
+    $ext = strtolower(pathinfo($file->original_filename, PATHINFO_EXTENSION));
+    if (!in_array($ext, $extensions)) {
+      return FALSE;
+    }
+  }
+  return TRUE;
 }
 
 function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $linkProps = array())

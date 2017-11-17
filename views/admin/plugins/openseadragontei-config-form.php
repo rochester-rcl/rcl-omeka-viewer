@@ -17,6 +17,12 @@
       the custom browse view that the plugin creates. If left blank the default
       menu name is <i>viewer</i>.
     </div>
+    <br/>
+    <div>
+      If you do choose to override the public theme's items show view, some checks will be made in the public_items_show hook. If there is
+      a viewer associated with the item's type or tags, the user will be redirected to the viewer template for that item. Otherwise, they will proceed
+      to the theme's default items show view. Please note that this is not recommended!
+    </div>
     <br>
     <div id="openseadragontei_custom_nav_name" class="two columns alpha">
         <label for="openseadragontei_custom_nav_name"><?php echo __("top level nav name"); ?></label>
