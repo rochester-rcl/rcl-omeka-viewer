@@ -72,7 +72,7 @@
                 setTimeout(function() {
                   element.className =  "show";
                   setElementClassNames(dropdown, "fade-in show");
-                }, 250);
+                }, 50);
               }
             }
             element.onmouseleave = function(event) {
@@ -81,7 +81,7 @@
                 setTimeout(function() {
                   element.className =  "hide";
                   setElementClassNames(dropdown, "fade-out hide");
-                }, 250);
+                }, 50);
               }
             }
             var ul = element.getElementsByTagName('ul')[0];
@@ -92,7 +92,7 @@
                 setTimeout(function() {
                   element.className =  "hide";
                   setElementClassNames(dropdown, "fade-out hide");
-                }, 250);
+                }, 50);
               }
             }
             for (var i=0; i < dropdown.length; i++) {
