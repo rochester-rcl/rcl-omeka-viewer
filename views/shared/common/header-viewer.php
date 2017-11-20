@@ -65,7 +65,7 @@
         var dropdown = element.getElementsByTagName('ul');
         if (dropdown.length > 0) {
             element.className = "hide";
-            element.onclick = function(event) {
+            element.onmouseenter = function(event) {
               event.preventDefault();
               if (element.className !== 'show') {
                 setElementClassNames(dropdown, "fade-in");
@@ -73,7 +73,12 @@
                   element.className =  "show";
                   setElementClassNames(dropdown, "fade-in show");
                 }, 250);
-              } else {
+              }
+            }
+            var ul = element.getElementsByTagName('ul')[0];
+            ul.onmouseleave = function(event) {
+              var element = this.parentNode;
+              if (element.className === 'show') {
                 setElementClassNames(dropdown, "hide");
                 setTimeout(function() {
                   element.className =  "hide";
