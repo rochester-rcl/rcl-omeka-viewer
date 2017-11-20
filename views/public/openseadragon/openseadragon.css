@@ -418,6 +418,7 @@ body {
 
 #primary-nav-viewer .navigation li {
 	border-left: 3px solid rgba(100, 100, 100, 0.5);
+	margin-right: 20px;
 	padding: 10px;
 }
 

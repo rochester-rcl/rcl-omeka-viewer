@@ -75,6 +75,15 @@
                 }, 250);
               }
             }
+            element.onmouseleave = function(event) {
+              if (element.className === 'show') {
+                setElementClassNames(dropdown, "hide");
+                setTimeout(function() {
+                  element.className =  "hide";
+                  setElementClassNames(dropdown, "fade-out hide");
+                }, 250);
+              }
+            }
             var ul = element.getElementsByTagName('ul')[0];
             ul.onmouseleave = function(event) {
               var element = this.parentNode;
