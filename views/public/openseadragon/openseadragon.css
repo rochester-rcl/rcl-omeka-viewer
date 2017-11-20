@@ -504,6 +504,10 @@ body {
 	font-size: 16px;
 }
 
+.viewer-nav-search #search-form {
+	display: flex;
+}
+
 /**************** Gallery Browse ********************/
 
 #gallery-sort-links {
