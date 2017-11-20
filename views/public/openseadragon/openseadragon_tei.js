@@ -382,7 +382,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     loadingOverlay.id = 'loading-overlay-container';
     loadingOverlay.className = 'loading';
     loadingMessage.id = 'loading-overlay-message';
-    loadingMessage.innerHTML = '<h3>Loading Viewer...</h3>';
+    loadingMessage.innerHTML = '<div class="viewer-loader"></div>';
     loadingOverlay.appendChild(loadingMessage);
     primary.appendChild(loadingOverlay);
     setTimeout(function() {
