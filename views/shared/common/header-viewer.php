@@ -49,6 +49,15 @@
           echo link_to_home_page(theme_logo(), array("class" => "nav-viewer-home-icon"));
           echo public_nav_main();
       ?>
+      <div class="viewer-nav-search">
+        <?php
+          if (get_theme_option('use_advanced_search') === null || get_theme_option('use_advanced_search')) {
+            echo search_form(array('show_advanced' => true, 'submit_value' => ''));
+          } else {
+            echo search_form(array('submit_value' => ''));
+          }
+        ?>
+      </div>
     </div>
     <script type="text/javascript">
       var navContainer = document.getElementById('primary-nav-viewer');

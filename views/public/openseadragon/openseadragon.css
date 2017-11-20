@@ -401,6 +401,7 @@ body {
 	font-family: inherit;
 	display: flex;
 	align-items: center;
+	width: 100%;
 }
 
 #primary-nav-viewer .navigation {
@@ -478,6 +479,35 @@ body {
 	color: #fff;
 	padding-bottom: 5px;
 }
+
+/************ Nav Menu Search ***********************/
+
+.viewer-nav-search {
+	display: flex;
+	border-left: 3px solid rgba(100, 100, 100, 0.5);
+	padding: 10px;
+}
+
+.viewer-nav-search #search-form #query {
+	border-radius: 2px;
+	border: 2px solid rgba(100, 100, 100, 0.9);
+	background-color: rgba(33,33,31,0.9);
+	color: #fff;
+	padding: 5px;
+}
+
+.viewer-nav-search #submit_search {
+	background: none;
+	border: none;
+	color: #fff;
+	font-family: FontAwesome;
+	font-size: 16px;
+}
+
+.viewer-nav-search #submit_search:before {
+	content: '\f002'
+}
+
 
 
 /**************** Gallery Browse ********************/
