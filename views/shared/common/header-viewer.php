@@ -65,7 +65,7 @@
         var dropdown = element.getElementsByTagName('ul');
         if (dropdown.length > 0) {
             element.className = "hide";
-            element.onmouseenter = function(event) {
+            element.onmouseover = function(event) {
               event.preventDefault();
               if (element.className !== 'show') {
                 setElementClassNames(dropdown, "fade-in");
