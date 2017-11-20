@@ -52,14 +52,17 @@
       <div class="viewer-nav-search">
         <?php
           if (get_theme_option('use_advanced_search') === null || get_theme_option('use_advanced_search')) {
-            echo search_form(array('show_advanced' => true, 'submit_value' => ' '));
+            echo search_form(array('show_advanced' => true));
           } else {
-            echo search_form(array('submit_value' => ' '));
+            echo search_form();
           }
         ?>
       </div>
     </div>
     <script type="text/javascript">
+      // take care of the search icon first
+      var searchSubmit = document.getElementById('submit_search');
+      searchSubmit.innerHTML = '<i class="fa fa-search" aria-hidden="true"></i>';
       var navContainer = document.getElementById('primary-nav-viewer');
       var nav = navContainer.getElementsByClassName('navigation');
       var navItems = nav[0].childNodes;
