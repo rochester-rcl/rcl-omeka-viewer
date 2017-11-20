@@ -52,9 +52,9 @@
       <div class="viewer-nav-search">
         <?php
           if (get_theme_option('use_advanced_search') === null || get_theme_option('use_advanced_search')) {
-            echo search_form(array('show_advanced' => true, 'submit_value' => ''));
+            echo search_form(array('show_advanced' => true, 'submit_value' => ' '));
           } else {
-            echo search_form(array('submit_value' => ''));
+            echo search_form(array('submit_value' => ' '));
           }
         ?>
       </div>
@@ -81,7 +81,7 @@
                 setTimeout(function() {
                   element.className =  "show";
                   setElementClassNames(dropdown, "fade-in show");
-                }, 50);
+                }, 1);
               }
             }
             element.onmouseleave = function(event) {
@@ -90,7 +90,7 @@
                 setTimeout(function() {
                   element.className =  "hide";
                   setElementClassNames(dropdown, "fade-out hide");
-                }, 50);
+                }, 1);
               }
             }
             var ul = element.getElementsByTagName('ul')[0];
@@ -101,7 +101,7 @@
                 setTimeout(function() {
                   element.className =  "hide";
                   setElementClassNames(dropdown, "fade-out hide");
-                }, 50);
+                }, 1);
               }
             }
             for (var i=0; i < dropdown.length; i++) {
