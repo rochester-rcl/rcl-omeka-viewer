@@ -109,7 +109,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
         return;
       }
     }
-    
+
     public function getViewer($item_type_id)
     {
       $viewer = open_seadragon_tei_get_viewer($item_type_id);
@@ -141,6 +141,10 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
         foreach($value as $title=>$meta){
           $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">' . $title . '</h4><div class="item-meta-value">' . $meta[0] . '</div></span>';
         }
+      }
+      // The tags
+      if (metadata($item, 'has tags')) {
+        $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Tags</h4><div class="item-meta-value">' .  tag_string($item) . '</div></span>';
       }
       return $escapedMetadata;
     }
