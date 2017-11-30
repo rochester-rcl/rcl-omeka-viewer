@@ -127,4 +127,4 @@
           }
         }
     </script>
-<div id="viewer-fullpage-container-<?php echo $pageTitle ?>">
+<div id="viewer-fullpage-container<?php echo (isset($pageTitle) ? '-' . $pageTitle : '');  ?>">
