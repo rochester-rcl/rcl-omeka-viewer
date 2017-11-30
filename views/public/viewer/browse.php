@@ -1,7 +1,7 @@
 <?php
 $pageTitle = __($this->browseTitle);
-//echo head(array('title'=>$pageTitle,'bodyclass' => 'viewer browse'));
-echo $this->partial('common/header-viewer.php');
+//echo head(array('bodyclass' => 'viewer browse'), $file='common/header-viewer.php');
+echo $this->partial('common/header-viewer.php', array('pageTitle' => 'browse'));
 ?>
 <nav class="gallery-sort-filters">
     <?php if ($total_results > 0): ?>
