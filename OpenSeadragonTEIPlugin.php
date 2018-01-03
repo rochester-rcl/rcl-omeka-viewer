@@ -16,8 +16,7 @@ $appRoot = getcwd();
 define('VIEWER_ROOT', dirname(__FILE__));
 define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
 //In case anybody changes the plugin filename we can still serve up the uploaded files
-define('TRANSFORMATION_DIRECTORY_WEB',  '/' . basename(dirname($_SERVER['PHP_SELF'])) .
-        '/plugins/' . basename(dirname(__FILE__)) . '/views/shared/xsl/');
+define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');
 
 class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 {

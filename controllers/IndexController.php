@@ -104,6 +104,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
     ));
 
     $itemTypes = open_seadragon_tei_get_item_types();
+    $currentItemId;
     if(array_key_exists($viewer->item_type_id, $itemTypes)){
       $currentItemId = $viewer->item_type_id;
     }

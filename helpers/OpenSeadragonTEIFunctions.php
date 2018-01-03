@@ -53,7 +53,7 @@ function open_seadragon_tei_transform_xml($xmlFileUrl, $xslFileUrl)
 function open_seadragon_tei_generate_upload_web_path($filename)
 {
   $base = basename($filename);
-  $url = TRANSFORMATION_DIRECTORY_WEB . $base;
+  $url = absolute_url('/') . TRANSFORMATION_DIRECTORY_WEB . '/' . $base;
   return $url;
 }
 
