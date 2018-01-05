@@ -220,11 +220,11 @@ function validate_extensions($files, $extensions)
 {
   foreach($files as $file) {
     $ext = strtolower(pathinfo($file->original_filename, PATHINFO_EXTENSION));
-    if (!in_array($ext, $extensions)) {
-      return FALSE;
+    if (in_array($ext, $extensions)) {
+      return TRUE;
     }
   }
-  return TRUE;
+  return FALSE;
 }
 
 function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $linkProps = array())

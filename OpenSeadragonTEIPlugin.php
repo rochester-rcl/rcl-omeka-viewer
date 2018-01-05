@@ -207,7 +207,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
         $viewerInfo = open_seadragon_tei_get_viewer($args['item']->item_type_id);
         if (check_files($args['item'])) {
           if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
-            header("Location: " . url('viewer/' . $args['item']->id));
+            header("Location: " . absolute_url('viewer/' . $args['item']->id));
             exit;
           }
         }
