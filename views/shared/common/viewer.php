@@ -69,7 +69,9 @@
           switch(osdViewer.osdViewerType){
             case 'tei':
               osdViewer.openSeadragonInit();
-              OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name);
+              OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
+                osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
+              });
               osdViewer.paginatorInit(osdViewer.imageCount);
               break;
             case 'image':
@@ -79,12 +81,12 @@
               }
               OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
               osdViewer.paginatorInit(osdViewer.imageCount);
+              osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
               break;
           }
           function navBack() {
             window.history.back();
           }
-          osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
         </script>
       </div>
     <?php endif; ?>

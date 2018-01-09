@@ -50,6 +50,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
         var pageCount = document.getElementById('page-count');
         for(var i = 0; i < pages.length; i++){
           var pageNumber = pages[i].dataset.pageNumber;
+
           if (pageNumber == data.page){
             pages[i].style.display = 'block';
           } else {
@@ -172,7 +173,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
 
 
 /********* STATIC METHODS *********/
-OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId){
+OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId, callback){
   OpenSeadragonTEIViewer.setLoadingScreen();
   self.onSaxonLoad = function() {
       // Parse Attached XML
@@ -203,6 +204,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
       OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
       OpenSeadragonTEIViewer.removeLoadingScreen();
+      if (callback) callback();
     };
   }
 
