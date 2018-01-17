@@ -9,6 +9,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
     this.imageCount = viewerSettings['imageCount'];
     this.osdViewerType = viewerSettings['osdViewer'];
     this.audioFile = viewerSettings['audio'];
+    this.anchor = viewerSettings['anchor'];
 
   this.openSeadragonInit = function(){
 

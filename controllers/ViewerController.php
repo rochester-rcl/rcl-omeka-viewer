@@ -13,6 +13,7 @@ class OpenSeadragonTEI_ViewerController extends Omeka_Controller_AbstractActionC
   {
     $itemId = $this->getParam('id');
     $page = $this->getParam('page');
+    $anchor = $this->getParam('anchor');
     $item = $this->_helper->db->getTable('Item')->find($itemId);
     if($item){
       $files = $item->getFiles();
@@ -20,6 +21,7 @@ class OpenSeadragonTEI_ViewerController extends Omeka_Controller_AbstractActionC
       $this->view->itemTypeId = $item->item_type_id;
       $this->view->item = $item;
       $this->view->page = $page;
+      $this->view->anchor = $anchor;
     }
   }
 

@@ -1,5 +1,4 @@
 <div class="openseadragon" id="openseadragon-viewer-container">
-
       <?php if ($viewer['osdViewer'] === 'video') : ?>
         <?php
           $videoUrl = $viewer['videos'][0]->videoUrl;
@@ -48,7 +47,7 @@
         </script>
     </div>
     <?php else : ?>
-      <?php $jsonViewer = json_encode($viewer); ?>
+      <?php $jsonViewer = json_encode($viewer);?>
       <div class="toolbar" id="viewer-controls">
           <div class="toolbar-button" onClick="navBack()" alt="go back" id="back"><i class="fa fa-angle-double-left fa-2x" aria-hidden="false"></i></div>
           <div class="toolbar-button" id="zoom-in"><i class="fa fa-search-plus fa-2x" aria-hidden="false"></i></div>
@@ -71,6 +70,9 @@
               osdViewer.openSeadragonInit();
               OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
                 osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
+                if (osdViewer.anchor) {
+                  location.hash = "#" + osdViewer.anchor;
+                }
               });
               osdViewer.paginatorInit(osdViewer.imageCount);
               break;

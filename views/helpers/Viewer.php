@@ -18,7 +18,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
    * @param File|array $files A File record or an array of File records.
    * @return string|null
    */
-  public function viewer($files, $item_type_id, $item, $page)
+  public function viewer($files, $item_type_id, $item, $page, $anchor)
   {
       if (!is_array($files)) {
           $files = array($files);
@@ -91,6 +91,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           if($viewer['xsl_viewer_option'] == 1){
             $openSeadragonViewer['xslURL'] = html_escape(open_seadragon_tei_generate_upload_web_path($viewer['xsl_url']));
             $openSeadragonViewer['osdViewer'] = 'tei';
+            $openSeadragonViewer['anchor'] = $anchor;
             if($validFiles['xml']){
               $xml = $validFiles['xml'];
               $openSeadragonViewer['xmlURL'] = html_escape($xml->getWebPath('original'));
