@@ -6,6 +6,12 @@ body {
 }
 
 /* VIDEO PLAYER  */
+
+.video-js .vjs-tech {
+  position: relative;
+  height: auto;
+}
+
 .video-js{
     font-size: 15px!important;
 }
@@ -79,6 +85,15 @@ body {
 
 .video-js .vjs-big-play-button:hover {
   background-color: rgba(199, 140, 140, 0.3) !important;
+}
+
+/*** Vimeo ***/
+#display-video {
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  justify-content: baseline;
 }
 
 /* MEDIA QUERIES */

@@ -14,9 +14,9 @@ require_once dirname(__FILE__) . '/helpers/OpenSeadragonTEIFunctions.php';
 require_once dirname(__FILE__) . '/helpers/OpenSeadragonFunctions.php';
 $appRoot = getcwd();
 define('VIEWER_ROOT', dirname(__FILE__));
-define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
+define('TRANSFORMATION_DIRECTORY_SYSTEM', FILES_DIR . '/xsl/');
 //In case anybody changes the plugin filename we can still serve up the uploaded files
-define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');
+define('TRANSFORMATION_DIRECTORY_WEB', WEB_DIR . '/files/xsl');
 
 class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 {
@@ -60,7 +60,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       PRIMARY KEY (`id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $db->query($sql);
-
+      $this->_createXSLDir();
       $this->_installOptions();
     }
 
@@ -81,7 +81,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $db = $this->_db;
       $sql = "DROP TABLE IF EXISTS `{$db->prefix}open_seadragon_tei_viewers`";
       $db->query($sql);
-
+      $this->_removeXSLDir();
       $this->_uninstallOptions();
   }
   /**
@@ -92,7 +92,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       add_translation_source(dirname(__FILE__) . '/languages');
       get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'OpenSeadragonTEI_View_Helper');
       add_shortcode('video_player', array($this, 'get_video_player'));
-
   }
 
   public function hookDefineAcl($args)
@@ -160,6 +159,19 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       return $nav;
   }
 
+  private function _createXSLDir()
+  {
+    if (!file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
+      mkdir(TRANSFORMATION_DIRECTORY_SYSTEM);
+    }
+  }
+
+  private function _removeXSLDir()
+  {
+    if (file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
+      rmdir(TRANSFORMATION_DIRECTORY_SYSTEM);
+    }
+  }
 
   private function getAllViewerItemTypes()
   {

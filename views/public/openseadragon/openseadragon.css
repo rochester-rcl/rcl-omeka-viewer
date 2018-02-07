@@ -49,7 +49,6 @@ body {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	align-items: center;
 }
 
 .openseadragon_viewer {
@@ -346,8 +345,9 @@ body {
 /** Video Player **/
 #video-viewer {
 	position: relative;
-	top: 25px;
-	width: 75%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 #video-controls {
