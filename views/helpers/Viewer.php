@@ -3,14 +3,17 @@
 class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
 {
 
-  protected $_supportedExtensions = array('bmp', 'gif', 'ico', 'jpeg', 'jpg',
+  protected $_supportedImageExtensions = array('bmp', 'gif', 'ico', 'jpeg', 'jpg',
                                           'png', 'tiff', 'tif', );
+  protected $_supportedVideoExtensions = array('webm', 'mp4', 'ogv', 'ogg');
+
+  protected $_supportedAudioExtensions = array('mp3');
+
+
   /**
    * Return a OpenSeadragon image viewer for the provided files.
    *
    * @param File|array $files A File record or an array of File records.
-   * @param int $width The width of the image viewer in pixels.
-   * @param int $height The height of the image viewer in pixels.
    * @return string|null
    */
   public function viewer($files, $item_type_id, $item)
@@ -34,44 +37,71 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
             $validFiles['xml'] = $file;
           }
           // A valid image must have a supported extension.
-          if (!in_array(strtolower($extension), $this->_supportedExtensions)) {
-              continue;
+          if (in_array(strtolower($extension), $this->_supportedImageExtensions)) {
+              $validFiles['images'][] = $file;
           }
-          $validFiles['images'][] = $file;
+
+          if(in_array(strtolower($extension), $this->_supportedVideoExtensions)) {
+              $validFiles['video'][] = $file;
+          }
+
+          if(in_array(strtolower($extension), $this->_supportedAudioExtensions)) {
+              $validFiles['audio'][] = $file;
+          }
+
       }
       // Return if there are no valid images.
       if (!$validFiles) {
           return;
       }
       $viewer = $this->getViewer($item_type_id);
+
       if($viewer){
-        $viewerName = strtolower($viewer['viewer_name']);
-        $viewerNameClean = str_replace(' ', '-', $viewerName);
-        $openSeadragonViewer = array(
-          'width' => $viewer['viewer_width'],
-          'height' => $viewer['viewer_height'],
-          'name' => $viewerNameClean,
-          'buttonPath' => src('images/', 'openseadragon'),
-          'tileSources' => $this->getTileSources($validFiles['images']),
-          'imageCount' => sizeof($validFiles['images']),
-          'metadata' => $this->getMetadata($item),
-          'tempImage' => html_escape($validFiles['images'][0]->getWebPath('original')),
-          'osdViewer' => 'image',
-        );
-        if($viewer['xsl_viewer_option'] == 'true'){
-          $openSeadragonViewer['xslURL'] = html_escape(open_seadragon_tei_generate_upload_web_path($viewer['xsl_url']));
-          $openSeadragonViewer['osdViewer'] = 'tei';
-          if($validFiles['xml']){
-            $xml = $validFiles['xml'];
-            $openSeadragonViewer['xmlURL'] = html_escape($xml->getWebPath('original'));
+        if (array_key_exists('video', $validFiles)) {
+          $videoViewer = array();
+          $videoViewer['osdViewer'] = 'video';
+          $i = 0;
+          foreach($validFiles['video'] as $videoFile){
+            $videoViewer['videos'][$i] = $this->getVideoSourceInfo($videoFile);
+            $i++;
           }
+          if (array_key_exists('images', $validFiles)) {
+            $videoViewer['poster'] = html_escape($validFiles['images'][0]->getWebPath('fullsize'));
+          }
+          $videoViewer['metadata'] = addslashes($this->getMetadata($item));
+          return $this->view->partial('common/viewer.php', array(
+              'viewer' => $videoViewer,
+            ));
         } else {
-          $openSeadragonViewer['osdViewer'] = 'image';
+          $viewerName = strtolower($viewer['viewer_name']);
+          $viewerNameClean = str_replace(' ', '-', $viewerName);
+          $openSeadragonViewer = array(
+            'name' => $viewerNameClean,
+            'buttonPath' => src('images/', 'openseadragon'),
+            'tileSources' => $this->getTileSources($validFiles['images']),
+            'imageCount' => sizeof($validFiles['images']),
+            'audio' => array_key_exists('audio', $validFiles) ? $this->getAudioSourceInfo($validFiles['audio'][0]) : NULL,
+            'metadata' => $this->getMetadata($item),
+            'tempImage' => html_escape($validFiles['images'][0]->getWebPath('original')),
+            'osdViewer' => 'image',
+          );
+          if($viewer['xsl_viewer_option'] == 1){
+            $openSeadragonViewer['xslURL'] = html_escape(open_seadragon_tei_generate_upload_web_path($viewer['xsl_url']));
+            $openSeadragonViewer['osdViewer'] = 'tei';
+            if($validFiles['xml']){
+              $xml = $validFiles['xml'];
+              $openSeadragonViewer['xmlURL'] = html_escape($xml->getWebPath('original'));
+            }
+          } elseif(array_key_exists('video', $validFiles)) {
+            $openSeadragonViewer['osdViewer'] = 'video';
+          } else {
+            $openSeadragonViewer['osdViewer'] = 'image';
+          }
+
+          return $this->view->partial('common/viewer.php', array(
+              'viewer' => $openSeadragonViewer,
+            ));
         }
-        
-        return $this->view->partial('common/viewer.php', array(
-            'viewer' => $openSeadragonViewer,
-          ));
       } else {
         return;
       }
@@ -100,7 +130,6 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           return $pyramid;
       }
     }
-
     public function getMetadata($item){
       $escapedMetadata = '';
       $meta = all_element_texts($item, array('return_type' => 'array'));
@@ -111,8 +140,18 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       }
       return $escapedMetadata;
     }
-
-
+    public function getVideoSourceInfo($videoFile) {
+      $videoSource = new stdClass();
+      $videoSource->videoUrl = file_display_url($videoFile, $format="original");
+      $videoSource->videoMimeType = $videoFile->mime_type;
+      return $videoSource;
+    }
+    public function getAudioSourceInfo($audioFile) {
+      $audioSource = new stdClass();
+      $audioSource->audioUrl = file_display_url($audioFile, $format="original");
+      $audioSource->audioMimeType = $audioFile->mime_type;
+      return $audioSource;
+    }
 }
 
  ?>

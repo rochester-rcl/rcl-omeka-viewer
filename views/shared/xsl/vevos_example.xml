@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity xml:id="v1" source="VEVOS">
+    <media source="VEVOS" refid="v_0001.jpg">derivative of digitized slide</media>
+    <title source="https://www.flickr.com/photos/arlis-reference/5015192541">Ehler 1-12</title>
+    <description source="https://www.flickr.com/photos/arlis-reference/5015192541">Public Domain.</description>
+    <date type="publication" source="VEVOS">2016-06-02</date>
+    <date type="publication" source="https://www.flickr.com/photos/arlis-reference/5015192541">2010-09-22</date>
+    <rights>Public Domain</rights>
+    <locationSet>
+        <location type="repository">
+            <name type="corporate" xml:lang="en" source="ARLIS">ARLIS</name>
+        </location>
+        <location type="site">
+            <name type="geographic" vocab="TGN" refid="7006450">Alaska (state)</name>
+        </location>
+    </locationSet>
+    <material type="medium" vocab="AAT" refid="300127339" source="ARLIS">color film (film)</material>
+    <worktype vocab="AAT" refid="300128366" source="ARLIS">color slides</worktype>
+    <worktype vocab="AAT" refid="300215302" source="https://www.flickr.com/photos/arlis-reference/5015192541">digital images</worktype>
+    <measurements type="fileSize" source="https://www.flickr.com/photos/arlis-reference/5015192541">938K</measurements>
+    <subject>
+        <term source="https://www.flickr.com/photos/arlis-reference/5015192541">Exxon</term>
+        <term source="https://www.flickr.com/photos/arlis-reference/5015192541">Valdez</term>
+        <term source="https://www.flickr.com/photos/arlis-reference/5015192541">Oil</term>
+        <term source="https://www.flickr.com/photos/arlis-reference/5015192541">Spill</term>
+        <term source="https://www.flickr.com/photos/arlis-reference/5015192541">Bud Ehler</term>
+    </subject>
+    <relation type="partOf" source="ARLIS">ARLIS Reference Collection</relation>
+    <relation type="partOf" source="VEVOS">VEVOS</relation>
+    <relation type="partOf" refid="https://www.flickr.com/photos/arlis-reference/sets/72157625012914532" source="https://www.flickr.com/photos/arlis-reference/5015192541">Bud Ehler Photo Collection</relation>
+</entity>

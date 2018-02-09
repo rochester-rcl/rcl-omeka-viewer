@@ -21,32 +21,31 @@ define('TRANSFORMATION_DIRECTORY_WEB',  '/' . basename(dirname($_SERVER['PHP_SEL
 
 class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 {
-
-  const DEFAULT_VIEWER_WIDTH = 500;
-  const DEFAULT_VIEWER_HEIGHT = 600;
   const DEFAULT_VIEWER_EMBED = 1;
   const DEFAULT_XSLT_TRANSFORMATION = 'views/shared/xsl/generic.xsl';
-
 
   protected $_hooks = array(
     'install',
     'uninstall',
     'initialize',
     'define_acl',
-    'public_items_show',
+    'config_form',
+    'config',
     'public_head',
+    'define_routes',
+    'public_items_show'
   );
 
   protected $_filters = array(
     'admin_navigation_main',
+    'public_navigation_main',
+    'page_caching_whitelist',
+    'search_form_default_action',
+    'items_search_default_url',
   );
 
   protected $_options = array(
-    'openseadragontei_width' => self::DEFAULT_VIEWER_WIDTH,
-    'openseadragontei_height' => self::DEFAULT_VIEWER_HEIGHT,
-    'openseadragontei_embed_public' => self::DEFAULT_VIEWER_EMBED,
-    'openseadragontei_embed_private' => self::DEFAULT_VIEWER_EMBED,
-    'openseadragontei_xsl' => self::DEFAULT_XSLT_TRANSFORMATION,
+    'openseadragontei_override_items_show' => self::DEFAULT_VIEWER_EMBED,
   );
 
   public function hookInstall()
@@ -56,9 +55,8 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       CREATE TABLE IF NOT EXISTS `{$db->prefix}open_seadragon_tei_viewers` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `viewer_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-      `viewer_width` int(10) NOT NULL,
-      `viewer_height` int(10) NOT NULL,
-      `xsl_viewer_option` varchar(10) COLLATE utf8_unicode_ci NOT NULL, 
+      `xsl_viewer_option` tinyint(1) COLLATE utf8_unicode_ci NOT NULL,
+      `override_items_show_option` tinyint(1) COLLATE utf8_unicode_ci NOT NULL,
       `xsl_url` varchar(500) COLLATE utf8_unicode_ci,
       `item_type_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
       PRIMARY KEY (`id`)
@@ -68,38 +66,50 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $this->_installOptions();
     }
 
+  public function hookConfigForm()
+  {
+    echo get_view()->partial('plugins/openseadragontei-config-form.php');
+  }
+
+  public function hookConfig()
+  {
+    set_option('openseadragontei_override_items_show', (int) (boolean) $_POST['openseadragontei_override_items_show']);
+    set_option('openseadragontei_custom_nav_name', $_POST['openseadragontei_custom_nav_name']);
+  }
+
   public function hookUninstall()
-    {
+  {
       // Drop the table.
       $db = $this->_db;
       $sql = "DROP TABLE IF EXISTS `{$db->prefix}open_seadragon_tei_viewers`";
       $db->query($sql);
 
       $this->_uninstallOptions();
-    }
+  }
   /**
     * Initialize the plugin.
     */
   public function hookInitialize()
-    {
+  {
       add_translation_source(dirname(__FILE__) . '/languages');
       get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'OpenSeadragonTEI_View_Helper');
-    }
+      add_shortcode('video_player', array($this, 'get_video_player'));
+
+  }
 
   public function hookDefineAcl($args)
-    {
+  {
       $acl = $args['acl']; // get the Zend_Acl
 
       $indexResource = new Zend_Acl_Resource('OpenSeadragonTEI_Index');
 
       $acl->add($indexResource);
 
-
       $acl->allow(array('super', 'admin'), array('OpenSeadragonTEI_Index'));
-    }
+  }
 
   public function filterAdminNavigationMain($nav)
-    {
+  {
       $nav[] = array(
           'label' => __('TEI Viewer'),
           'uri' => url('open-seadragon-tei'),
@@ -107,36 +117,147 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
           'privilege' => 'index',
       );
       return $nav;
+  }
+
+  public function filterPublicNavigationMain($nav)
+  {
+    if(!get_option('openseadragontei_override_items_show')) {
+      $itemTypes = $this->getAllViewerItemTypes();
+      $customNav = get_option('openseadragontei_custom_nav_name');
+      if($itemTypes) {
+        $pages = array();
+        foreach($itemTypes as $itemType) {
+          $page = array('label' => __($itemType['name']),
+                        'uri' => $itemType['uri'],
+          );
+          array_push($pages, $page);
+        }
+        $nav[] = array(
+                        'label' => __( $customNav ? $customNav : 'Viewer'),
+                        'uri' => '/',
+                        'pages' => $pages,);
+        }
+        return $nav;
+      }
+      return $nav;
+  }
+
+  public function filterSearchFormDefaultAction()
+  {
+    if (is_admin_theme()) {
+      return '/admin/search';
     }
+    return '/viewer/search';
+  }
+  
+  public function filterItemsSearchDefaultUrl()
+  {
+    if (is_admin_theme()) {
+      return '/admin/items/search';
+    }
+    return '/viewer/advanced-search';
+  }
+
+  private function getAllViewerItemTypes()
+  {
+    $db = $this->_db;
+    $sql = "SELECT item_type_id FROM `{$db->prefix}open_seadragon_tei_viewers`";
+    $stmt = $db->query($sql);
+    $viewerItemTypeIds = $stmt->fetchAll();
+    if($viewerItemTypeIds) {
+      $table = $db->prefix . 'item_types';
+      $itemTypeQuery = $db->select()
+      ->from($table)
+      ->where('id IN(?)', $viewerItemTypeIds);
+      $stmt = $db->query($itemTypeQuery);
+      $results = $stmt->fetchAll();
+
+      if($results) {
+        $itemTypeArray = array();
+        foreach($results as $itemTypeObj) {
+          $item = array( 'name' => $itemTypeObj['name'],
+                         'id' => $itemTypeObj['id'],
+                         'uri' => url('viewer/browse/' . str_replace(' ', '-', strtolower($itemTypeObj['name']))),
+                       );
+          array_push($itemTypeArray, $item);
+        }
+        return($itemTypeArray);
+      } else {
+        return;
+      }
+    }
+  }
 
     /**
     * Display the image viewer in public items/show.
     */
   public function hookPublicItemsShow($args)
-    {
-      //put item type logic in view helper
-      echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
+  {
+      if(get_option('openseadragontei_override_items_show') && !is_admin_theme()) {
+        echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
+      }
+  }
+
+  public function hookDefineRoutes($args)
+  {
+    $router = $args['router'];
+    $viewerRoute = new Zend_Controller_Router_Route('viewer/:id',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'show'));
+    $videoRoute = new Zend_Controller_Router_Route('video/:id',
+      array('module'=>'open-seadragon-tei', 'controller'=>'video', 'action'=>'show'));
+    $viewerBrowseRoute = new Zend_Controller_Router_Route('viewer/browse/:itemTypeName',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'browse'));
+    $viewerSearchRoute = new Zend_Controller_Router_Route('viewer/search',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'search'));
+    $viewerAdvancedSearchRoute = new Zend_Controller_Router_Route('viewer/advanced-search',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'advanced-search'));
+    $viewerAdvancedSearchResultsRoute = new Zend_Controller_Router_Route('viewer/advanced-search/results',
+      array('module'=>'open-seadragon-tei', 'controller'=>'viewer', 'action'=>'results'));
+
+    $router->addRoute('viewer', $viewerRoute);
+    $router->addRoute('video', $videoRoute);
+    $router->addRoute('viewer-browse', $viewerBrowseRoute);
+    $router->addRoute('viewer-search', $viewerSearchRoute);
+    $router->addRoute('viewer-search-advanced', $viewerAdvancedSearchRoute);
+    $router->addRoute('viewer-search-advanced-results', $viewerAdvancedSearchResultsRoute);
+  }
+
+  public function filterPageCachingWhitelist($whitelist)
+  {
+    $itemTypes = $this->getAllViewerItemTypes();
+    foreach($itemTypes as $itemType) {
+      $whitelist[itemType[uri]] = array('cache'=>true);
     }
+    return $whitelist;
+  }
 
   public function openseadragon_pyramid($image, $size)
-    {
+  {
       return openseadragon_create_pyramid($image, $size);
-    }
+  }
 
   public function hookPublicHead()
-    {
+  {
       queue_js_file('Saxonce.nocache', 'Saxon-CE/Saxonce');
       queue_css_file('openseadragon', 'screen', false, 'openseadragon');
+      queue_js_file('video.min', 'rcl-vjs-nle/node_modules/video.js/dist');
+      queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
+      queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
+      queue_css_file('video-js');
+      queue_css_file('player-custom');
       queue_js_file('openseadragon.min', 'openseadragon');
-      //queue_js_file('settings', 'openseadragon');
       queue_js_file('openseadragon_tei', 'openseadragon');
-      queue_js_url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js");
-      queue_css_url("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css");
       queue_js_url("https://use.fontawesome.com/aadd731529.js");
+      queue_js_file('lazyload.min', 'lazyload');
+  }
 
-    }
-
-
+  public function get_video_player($args, $view)
+  {
+    $videoUrl = $args['url'];
+    $mime = $args['mime'];
+    $poster = $args['poster'];
+    echo $view->partial('common/video-viewer.php', array('videoUrl' => $videoUrl, 'mime' => $mime, 'poster' => $poster));
+  }
 }
 
 ?>

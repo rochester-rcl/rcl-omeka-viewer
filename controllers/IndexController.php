@@ -8,9 +8,9 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
     $this->_helper->db->setDefaultModelName('OpenSeadragonTEIViewer');
     $this->_setBrowseRecords();
   }
+
   public function indexAction()
   {
-
 
   }
 
@@ -62,7 +62,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
       'description' => 'Viewer name',
       'value' => $viewer->viewer_name,
     ));
-    if($viewer->xsl_viewer_option == 'true'){
+    if($viewer->xsl_viewer_option == 1){
       $checkedState = TRUE;
     } else {
       $checkedState = FALSE;
@@ -73,6 +73,19 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
         'checkedValue' => 'true',
         'uncheckedValue' => 'false',
         'checked' => $checkedState,
+      ));
+      if($viewer->override_items_show_option == 1){
+        $itemsShowCheckedState = TRUE;
+      } else {
+        $itemsShowCheckedState = FALSE;
+      }
+      $form->addElement('checkbox', 'override_items_show_option', array (
+        'label' => __('Override Items Show Template'),
+        'description' => 'Check this box to override the current theme\'s items show template.
+                          Leaving it unchecked will create views at mysite/viewer/itemtype/itemid.',
+        'checkedValue' => 'true',
+        'uncheckedValue' => 'false',
+        'checked' => $itemsShowCheckedState,
       ));
 
 
@@ -88,34 +101,6 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
         'description' => 'Upload a file to transform associated TEI files.
                           Leave blank to add a viewer for images only. Current file is ' . basename($viewer->xsl_url),
         'destination' => TRANSFORMATION_DIRECTORY_SYSTEM,
-    ));
-
-    $form->addElement('text', 'viewer_width', array(
-      'label' => 'Viewer Width',
-      'description' => 'Viewer width in pixels. Current width is ' . $viewer->viewer_width . ' px.',
-      'value' => $viewer->viewer_width,
-      'validators' => array(
-        array('validator' => 'Int',
-              'breakChainOnFailure' => true,
-              'options' => array('messages' => array(
-                  Zend_Validate_Int::NOT_INT => __('Width value must be an integer.')
-              )),
-            ),
-      ),
-    ));
-
-    $form->addElement('text', 'viewer_height', array(
-      'label' => 'Viewer Height',
-      'description' => 'Viewer height in pixels. Current height is ' . $viewer->viewer_height . ' px.',
-      'value' => $viewer->viewer_height,
-      'validators' => array(
-        array('validator' => 'Int',
-              'breakChainOnFailure' => true,
-              'options' => array('messages' => array(
-                  Zend_Validate_Int::NOT_INT => __('Height value must be an integer.')
-              )),
-            ),
-      ),
     ));
 
     $itemTypes = open_seadragon_tei_get_item_types();
@@ -159,17 +144,16 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
 
         $viewerName = $form->viewer_name->getValue();
         $viewerItemType = $form->item_type->getValue();
-        $viewerWidth = $form->viewer_width->getValue();
-        $viewerHeight = $form->viewer_height->getValue();
         $xslOption = $form->xsl_viewer_option->getValue();
+        $overrideItemsShowOption = $form->override_items_show_option->getValue();
 
         $viewer = new OpenSeadragonTEIViewer();
         $viewer->viewer_name = $viewerName;
         $viewer->item_type_id = $viewerItemType;
+        $viewer->override_items_show_option;
         $viewer->xsl_viewer_option = $xslOption;
+        $viewer->override_items_show_option = $overrideItemsShowOption;
         $viewer->xsl_url = $filename;
-        $viewer->viewer_width = $viewerWidth;
-        $viewer->viewer_height = $viewerHeight;
         try {
             if ($viewer->save()) {
                 $this->_helper->flashMessenger(__('The viewer "%s" has been added.', $viewer->viewer_name), 'success');
@@ -200,15 +184,13 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
         }
         $viewerName = $form->viewer_name->getValue();
         $viewerItemType = $form->item_type->getValue();
-        $viewerWidth = $form->viewer_width->getValue();
-        $viewerHeight = $form->viewer_height->getValue();
         $xslOption = $form->xsl_viewer_option->getValue();
+        $viewer->override_items_show_option = $overrideItemsShowOption;
 
         $viewer->viewer_name = $viewerName;
         $viewer->item_type_id = $viewerItemType;
         $viewer->xsl_viewer_option = $xslOption;
-        $viewer->viewer_width = $viewerWidth;
-        $viewer->viewer_height = $viewerHeight;
+        $viewer->override_items_show_option = $overrideItemsShowOption;
 
         try {
             if ($viewer->save()) {

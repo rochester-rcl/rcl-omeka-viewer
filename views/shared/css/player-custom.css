@@ -1,0 +1,83 @@
+
+
+/* Body */
+body {
+  background-color: #21252c;
+}
+
+/** Firefox CSS Height Bug **/
+
+/* VIDEO PLAYER  */
+.video-js{
+    font-size: 15px!important;
+}
+.vjs_video_3-dimensions{
+    width: 100%;
+    height: auto;
+}
+.video-js .vjs-control-bar {
+    background-color: transparent!important;
+    position: absolute !important;
+    top: 0px;
+    z-index: 5;
+    background-color: none;
+}
+
+#video-viewer .video-js .vjs-control-bar,
+#video-viewer .vjs-remaining-time-display,
+#video-viewer .vjs-button  {
+  font-size: 1vw;
+}
+
+.video-centered .video-js .vjs-control-bar,
+.video-centered .vjs-remaining-time-display,
+.video-centered .vjs-button {
+  font-size: 2.5vw;
+}
+
+.video-container {
+  height: 100%;
+  width: 100%;
+}
+
+.vjs-remaining-time.vjs-time-control.vjs-control {
+    position: absolute;
+    left: 0;
+    top: 30px;
+    height: auto;
+    width: 100%;
+    border-radius: 5px;
+}
+.vjs-remaining-time-display, .vjs-button {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.5vw;
+    font-weight: 100;
+    color: #fff;
+}
+.vjs-remaining-time {
+    position: absolute;
+}
+
+/** Framerate Controls **/
+
+
+/** Progress Slider **/
+.video-js .vjs-slider {
+  background: rgba(199,140,140,0.5);
+
+}
+
+.video-js .vjs-load-progress {
+  background-color: #c78c8c;
+}
+
+/** Big Play Button **/
+
+.video-js .vjs-big-play-button {
+  /*background-color: #c78c8c !important;*/
+  background-color: rgba(199, 140, 140, 0.7) !important;
+}
+
+.video-js .vjs-big-play-button:hover {
+  background-color: rgba(199, 140, 140, 0.3) !important;
+}

@@ -14,16 +14,14 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
   {
     parent::init();
     $this->_addNameElement();
+    $this->_overrideItemsShowElement();
     $this->_addCheckboxElement();
     $this->_addFileElement();
-    $this->_addWidthElement();
-    $this->_addHeightElement();
     $this->_addItemTypeDropdown();
     $this->_addSubmit();
     $this->_addSave();
     $this->applyOmekaStyles();
     $this->setAutoApplyOmekaStyles(false);
-
   }
 
   protected function _addFileElement()
@@ -42,54 +40,34 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     ));
 
   }
-
-  protected function _addCheckboxElement(){
+  protected function _overrideItemsShowElement()
+  {
+    $this->addElement('checkbox', 'override_items_show_option', array (
+      'label' => __('Override Items Show Template'),
+      'description' => 'Check this box to override the current theme\'s items show template.
+                        Leaving it unchecked will create views at mysite/viewer/itemtype/itemid.',
+      'checkedValue' => 1,
+      'uncheckedValue' => 0,
+    ));
+  }
+  protected function _addCheckboxElement()
+  {
     $this->addElement('checkbox', 'xsl_viewer_option', array(
       'label' => __('Use an XSLT File for Rendering'),
       'description' => 'Check this box to add a rendering component for attached XML files.',
-      'checkedValue' => 'true',
-      'uncheckedValue' => 'false',
+      'checkedValue' => 1,
+      'uncheckedValue' => 0,
     ));
   }
 
-  protected function _addNameElement(){
+  protected function _addNameElement()
+  {
     $this->addElement('text', 'viewer_name', array(
       'label' => 'Viewer Name',
       'description' => 'Viewer name',
     ));
   }
 
-  protected function _addWidthElement()
-  {
-    $this->addElement('text', 'viewer_width', array(
-      'label' => 'Viewer Width',
-      'description' => 'Viewer width in pixels',
-      'validators' => array(
-        array('validator' => 'Int',
-              'breakChainOnFailure' => true,
-              'options' => array('messages' => array(
-                  Zend_Validate_Int::NOT_INT => __('Width value must be an integer.')
-              )),
-            ),
-      ),
-    ));
-  }
-
-  protected function _addHeightElement()
-  {
-    $this->addElement('text', 'viewer_height', array(
-      'label' => 'Viewer Height',
-      'description' => 'Viewer height in pixels',
-      'validators' => array(
-        array('validator' => 'Int',
-              'breakChainOnFailure' => true,
-              'options' => array('messages' => array(
-                  Zend_Validate_Int::NOT_INT => __('Height value must be an integer.')
-              )),
-            ),
-      ),
-    ));
-    }
    protected function _addItemTypeDropdown()
    {
      $db = get_db();
