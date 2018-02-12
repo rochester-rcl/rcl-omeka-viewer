@@ -23,7 +23,7 @@ function open_seadragon_tei_get_viewer($item_type_id)
   if ($item_type_id) {
     $db = get_db();
     $select = $db->select()
-    ->from('omeka_open_seadragon_tei_viewers')
+    ->from($db->prefix . 'open_seadragon_tei_viewers')
     ->where('item_type_id = '.$item_type_id);
 
     $stmt = $db->query($select);
