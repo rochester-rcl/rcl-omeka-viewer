@@ -176,7 +176,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
 /********* STATIC METHODS *********/
 OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId, callback){
   OpenSeadragonTEIViewer.setLoadingScreen();
-  self.onSaxonLoad = function() {
+  window.onSaxonLoad = function() {
       // Parse Attached XML
       var xsl = Saxon.requestXML(xslURL);
       var xml = Saxon.requestXML(xmlURL);
