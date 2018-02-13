@@ -1,5 +1,4 @@
-var OpenSeadragonTEIViewer = function(viewerSettings){
-
+var OpenSeadragonTEIViewer = function(viewerSettings) {
     this.name = viewerSettings['name'];
     this.buttonPath = viewerSettings['buttonPath'];
     this.tileSources = viewerSettings['tileSources'];
@@ -172,41 +171,58 @@ var OpenSeadragonTEIViewer = function(viewerSettings){
     }
   }
 
+/***** STATIC METHODS *****/
+OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId, callback) {
+  var checkSaxon = function(callback) {
+    if (window.SaxonJS !== undefined) {
+      callback();
+    } else {
+      setTimeout(function() {
+        checkSaxon(callback);
+      }, 100);
+    }
+  }
 
-/********* STATIC METHODS *********/
-OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId, callback){
-  OpenSeadragonTEIViewer.setLoadingScreen();
-  self.onSaxonLoad = function() {
+  var onSaxonLoad = function() {
+
       // Parse Attached XML
-      var xsl = Saxon.requestXML(xslURL);
-      var xml = Saxon.requestXML(xmlURL);
-      var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);
-      // Set up metadata display
-      var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
-      // Set up TEI display
-      var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(transformed);
+      /*var xsl = SaxonJS.requestXML(xslURL);
+      var xml = SaxonJS.requestXML(xmlURL);
+      var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);*/
+      SaxonJS.transform({
+        stylesheetLocation: xslURL,
+        sourceLocation: xmlURL,
+      }, function(result) {
+        // Set up metadata display
+        var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
+        // Set up TEI display
+        var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(result);
 
-      var container = document.createElement('div');
-      container.className = 'tei-container';
-      var toolbar = document.getElementById('viewer-controls');
-      toolbar.appendChild(metadataPanel.metadataToggleButton);
-      toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
+        var container = document.createElement('div');
+        container.className = 'tei-container';
+        var toolbar = document.getElementById('viewer-controls');
+        toolbar.appendChild(metadataPanel.metadataToggleButton);
+        toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
 
-      var viewer = document.getElementById('osd-flex-container');
+        var viewer = document.getElementById('osd-flex-container');
 
-      viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
-      viewer.appendChild(metadataPanel.metadataElement);
-      //var viewer = document.getElementsByClassName('openseadragon');
-      //viewer.appendChild(container);
-      //viewer.insertBefore(container, viewer.childNodes[0]);
-      OpenSeadragonTEIViewer.prepareViewerFirstPage();
-      var personElements = document.getElementsByClassName('persname-popover');
-      var placeElements = document.getElementsByClassName('placename-popover');
-      OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
-      OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
-      OpenSeadragonTEIViewer.removeLoadingScreen();
-      if (callback) callback();
-    };
+        viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
+        viewer.appendChild(metadataPanel.metadataElement);
+        //var viewer = document.getElementsByClassName('openseadragon');
+        //viewer.appendChild(container);
+        //viewer.insertBefore(container, viewer.childNodes[0]);
+        OpenSeadragonTEIViewer.prepareViewerFirstPage();
+        var personElements = document.getElementsByClassName('persname-popover');
+        var placeElements = document.getElementsByClassName('placename-popover');
+        OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
+        OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
+        OpenSeadragonTEIViewer.removeLoadingScreen();
+        if (callback) callback();
+      });
+    }
+    OpenSeadragonTEIViewer.setLoadingScreen();
+    checkSaxon(onSaxonLoad);
+
   }
 
   OpenSeadragonTEIViewer.formatModal = function(elements, displayType) {
