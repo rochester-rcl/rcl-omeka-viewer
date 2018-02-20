@@ -181,14 +181,13 @@ body {
 	font-size: 15px;
 }
 
-#item-metadata .item-metadata-element:nth-child(1) .item-meta-head {
-	display: none;
-}
-
-#item-metadata .item-metadata-element:nth-child(1) .item-meta-value {
-	font-size: 20px;
-	font-weight: bold;
-	padding-top: 30px;
+#item-meta-title {
+	color: #ccc;
+	width: 90%;
+	padding-top: 40px;
+	margin: 1vw;
+	line-height: 2vw;
+	word-wrap: break-word;
 }
 
 #item-metadata .item-metadata-element h4{

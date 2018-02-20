@@ -137,6 +137,8 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
     }
     public function getMetadata($item){
       $escapedMetadata = '';
+      // Add the title
+      $escapedMetadata .= '<h2 class="item-meta-head" id="item-meta-title">' . metadata($item, array('Dublin Core', 'Title')) . '</h2>';
       $meta = all_element_texts($item, array('return_type' => 'array'));
       foreach($meta as $key=>$value){
         foreach($value as $title=>$meta){
@@ -147,6 +149,8 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       if (metadata($item, 'has tags')) {
         $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Tags</h4><div class="item-meta-value">' .  tag_string($item) . '</div></span>';
       }
+      // The citation
+      $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Citation</h4><div class="item-meta-value">' . $item->getCitation() . '</div></span>';
       return $escapedMetadata;
     }
     public function getVideoSourceInfo($videoFile) {
