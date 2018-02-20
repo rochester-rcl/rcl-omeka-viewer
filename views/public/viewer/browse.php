@@ -56,6 +56,7 @@ echo $this->partial('common/header-viewer.php', array('pageTitle' => 'browse'));
 
 <script type="text/javascript">
   var lazyLoad = new LazyLoad();
+  window.dispatchEvent(new Event('resize'));
 </script>
 
 <?php echo foot(); ?>
