@@ -200,6 +200,8 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       //viewer.appendChild(container);
       //viewer.insertBefore(container, viewer.childNodes[0]);
       OpenSeadragonTEIViewer.prepareViewerFirstPage();
+      // hide it by default if there's no transcription
+      if (transformed === '' || transformed === undefined) document.getElementById('toggle-transcription').click();
       var personElements = document.getElementsByClassName('persname-popover');
       var placeElements = document.getElementsByClassName('placename-popover');
       OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
