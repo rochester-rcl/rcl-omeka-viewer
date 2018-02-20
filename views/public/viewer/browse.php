@@ -55,7 +55,9 @@ echo $this->partial('common/header-viewer.php', array('pageTitle' => 'browse'));
 <?php fire_plugin_hook('public_items_browse', array('items'=>$items, 'view' => $this)); ?>
 
 <script type="text/javascript">
-  var lazyLoad = new LazyLoad();
+  var lazyLoad = new LazyLoad({
+	container: document.getElementById('viewer-fullpage-container-browse'),
+  });
 </script>
 
 <?php echo foot(); ?>
