@@ -62,7 +62,7 @@ function lazy_load_image($format, $item)
   $file = $item->getFile();
   $thumbnail = $file->getWebPath($format);
   $thumbnailConstraint = get_option('square_thumbnail_constraint');
-  $markup = '<img class="pre-loading" data-original="' . $thumbnail . '" width="' . $thumbnailConstraint . '" height="' . $thumbnailConstraint . '"/>';
+  $markup = '<img class="pre-loading" data-src="' . $thumbnail . '" width="' . $thumbnailConstraint . '" height="' . $thumbnailConstraint . '"/>';
   return $markup;
 }
 

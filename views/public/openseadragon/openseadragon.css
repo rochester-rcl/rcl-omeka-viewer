@@ -577,7 +577,9 @@ body {
 	display: flex;
 	flex-wrap: wrap;
 	padding-top: 30px;
-	width: 80%;
+	width: 100%;
+	align-items: center;
+	margin: 5px;
 }
 
 .item-flexbox-record-link {
