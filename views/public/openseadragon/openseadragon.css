@@ -201,7 +201,7 @@ body {
 	text-transform: uppercase;
 }
 
-.tei-container .openseadragon-flex-container #item-metadata .item-meta-value {
+.tei-container #item-metadata .item-meta-value {
 	height: auto;
 	width: 90%;
 	margin: 1vw;
