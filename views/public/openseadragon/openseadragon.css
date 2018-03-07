@@ -49,7 +49,6 @@ body {
 	display: flex;
 	width: 100%;
 	height: 100%;
-	align-items: center;
 }
 
 .openseadragon_viewer {
@@ -201,7 +200,7 @@ body {
 	text-transform: uppercase;
 }
 
-.tei-container #item-metadata .item-meta-value {
+.tei-container  #item-metadata .item-meta-value {
 	height: auto;
 	width: 90%;
 	margin: 1vw;
@@ -345,8 +344,9 @@ body {
 /** Video Player **/
 #video-viewer {
 	position: relative;
-	top: 25px;
-	width: 75%;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 #video-controls {
@@ -490,6 +490,14 @@ body {
 /************ Nav Menu Search ***********************/
 
 .viewer-nav-search {
+  display: flex;
+  border-left: 3px solid rgba(100, 100, 100, 0.5);
+	padding: 10px;
+  min-width: 250px;
+	align-items: baseline;
+}
+
+.viewer-nav-search {
 	display: flex;
 	border-left: 3px solid rgba(100, 100, 100, 0.5);
 	padding: 10px;
@@ -510,17 +518,24 @@ body {
 	font-size: 16px;
 }
 
-.viewer-nav-search #search-form {
-	display: flex;
-	align-items: baseline;
+.viewer-nav-search #submit_search:hover {
+	color: #777;
 }
 
-/**************** Advanced Search *********************/
-.viewer-nav-search #search-form #advanced-form {
-	background-color: #282828;
-	border: none;
-	color: #fff;
+.viewer-nav-search #search-form {
+	display: flex;
 }
+
+.viewer-nav-search-advanced-link {
+	color: #fff !important;
+	margin-left: 10px;
+}
+
+.viewer-nav-search-advanced-link:hover {
+	color: #777 !important;
+}
+
+
 
 /**************** Gallery Browse ********************/
 
@@ -584,8 +599,9 @@ body {
 	display: flex;
 	flex-wrap: wrap;
 	padding-top: 30px;
-	width: 80%;
-	margin: 0 auto;
+	width: 100%;
+	align-items: center;
+	margin: 5px;
 }
 
 .item-flexbox-record-link {
