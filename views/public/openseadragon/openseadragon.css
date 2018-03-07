@@ -490,6 +490,14 @@ body {
 /************ Nav Menu Search ***********************/
 
 .viewer-nav-search {
+  display: flex;
+  border-left: 3px solid rgba(100, 100, 100, 0.5);
+	padding: 10px;
+  min-width: 250px;
+	align-items: baseline;
+}
+
+.viewer-nav-search {
 	display: flex;
 	border-left: 3px solid rgba(100, 100, 100, 0.5);
 	padding: 10px;
@@ -510,9 +518,24 @@ body {
 	font-size: 16px;
 }
 
+.viewer-nav-search #submit_search:hover {
+	color: #777;
+}
+
 .viewer-nav-search #search-form {
 	display: flex;
 }
+
+.viewer-nav-search-advanced-link {
+	color: #fff !important;
+	margin-left: 10px;
+}
+
+.viewer-nav-search-advanced-link:hover {
+	color: #777 !important;
+}
+
+
 
 /**************** Gallery Browse ********************/
 
