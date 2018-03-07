@@ -27,7 +27,7 @@
     echo head_css();
     ?>
     <?php
-      queue_js_file('Saxonce.nocache', 'Saxonce');
+      queue_js_file('Saxonce.nocache', 'Saxon-CE/Saxonce');
       queue_js_file('video.min', 'videojs');
       queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
       queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
