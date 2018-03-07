@@ -512,6 +512,16 @@ body {
 
 .viewer-nav-search #search-form {
 	display: flex;
+	align-items: baseline;
+}
+
+/**************** Advanced Search *********************/
+.viewer-nav-search #search-form #advanced-form {
+	background-color: #282828;
+	border: none;
+	color: #fff;
+	position: relative;
+	top: 0px;
 }
 
 /**************** Gallery Browse ********************/
