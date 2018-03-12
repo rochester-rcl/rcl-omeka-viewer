@@ -103,6 +103,17 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     }
   }
 
+  public function updateSearchText($item, $text)
+  {
+    $st = $this->_db->getTable('SearchText')->findByRecord('Item', $item->id);
+    if (isset($st)) {
+      $st->text .= ' ' . $text;
+      $st->save();
+      return true;
+    }
+    return false;
+  }
+
   public function saveFileXMLText(File $file, $item)
   {
 
@@ -116,7 +127,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       // delete the element
       $item->deleteElementTextsByElementId(array($elementId));
     }
-
     $et = new ElementText;
     $et->record_id = $file->item_id;
     $et->element_id = $elementId;
@@ -124,6 +134,10 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     $et->html = false;
     $et->text = $this->extractXML($file);
     if ($et->text != NULL) {
+      $stStatus = $this->updateSearchText($item, $et->text);
+      if (!$stStatus) {
+        $item->addSearchText($et->text);
+      }
       $et->save();
     }
   }
