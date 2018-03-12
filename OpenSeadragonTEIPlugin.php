@@ -14,25 +14,32 @@ require_once dirname(__FILE__) . '/helpers/OpenSeadragonTEIFunctions.php';
 require_once dirname(__FILE__) . '/helpers/OpenSeadragonFunctions.php';
 $appRoot = getcwd();
 define('VIEWER_ROOT', dirname(__FILE__));
-define('TRANSFORMATION_DIRECTORY_SYSTEM', FILES_DIR . '/xsl/');
+define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
 //In case anybody changes the plugin filename we can still serve up the uploaded files
-define('TRANSFORMATION_DIRECTORY_WEB', WEB_DIR . '/files/xsl');
+define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');
 
 class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 {
   const DEFAULT_VIEWER_EMBED = 1;
   const DEFAULT_XSLT_TRANSFORMATION = 'views/shared/xsl/generic.xsl';
+  const XML_TEXT_ELEMENT_SET_NAME = 'XML Search';
+  const XML_TEXT_ELEMENT_NAME = 'Text';
+  const XML_EXT = 'xml';
+  const XML_TEXT_ELEMENT_RECORD_TYPE = 'Item';
 
   protected $_hooks = array(
     'install',
     'uninstall',
     'initialize',
+    'upgrade',
     'define_acl',
     'config_form',
     'config',
     'public_head',
     'define_routes',
-    'public_items_show'
+    'public_items_show',
+    'after_save_item',
+    'after_delete_file',
   );
 
   protected $_filters = array(
@@ -40,6 +47,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     'public_navigation_main',
     'page_caching_whitelist',
     'exhibit_layouts',
+    'display_elements',
+    'disableDisplay' => array('Display', 'Item', self::XML_TEXT_ELEMENT_SET_NAME, self::XML_TEXT_ELEMENT_NAME),
+    'disableForm' => array('Form', 'Item', self::XML_TEXT_ELEMENT_SET_NAME, self::XML_TEXT_ELEMENT_NAME),
   );
 
   protected $_options = array(
@@ -47,7 +57,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   );
 
   public function hookInstall()
-    {
+  {
       $db = $this->_db;
       $sql = "
       CREATE TABLE IF NOT EXISTS `{$db->prefix}open_seadragon_tei_viewers` (
@@ -60,9 +70,83 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       PRIMARY KEY (`id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $db->query($sql);
-      $this->_createXSLDir();
+
       $this->_installOptions();
+      $this->createElementSet();
+
+  }
+
+  private function createElementSet()
+  {
+    if ($this->_db->getTable('ElementSet')->findByName(self::XML_TEXT_ELEMENT_SET_NAME)) {
+      throw new Exception('An element set by the name ' . self::XML_TEXT_ELEMENT_SET_NAME . ' already exists. You must delete that element set to install this plugin.');
     }
+    $elementSetMeta = array('name' => self::XML_TEXT_ELEMENT_SET_NAME,
+                            'description' => 'This element set indexes the text from attached XML files and makes them searchable.');
+    $elements = array(array('name' => self::XML_TEXT_ELEMENT_NAME,
+                            'description' => 'Text extracted from XML files attached to this item.'));
+    insert_element_set($elementSetMeta, $elements);
+  }
+
+
+  public function isTextExtracted($item) {
+    $elements = array_filter($this->_db->getTable('ElementText')->findByRecord($item), function($element) {
+      return $element->element_id === $this->getXMLSearchElementId();
+    });
+    return count($elements) > 0 === true;
+  }
+
+  public function saveItemXMLText(Item $item)
+  {
+    foreach ($item->Files as $file) {
+      $this->saveFileXMLText($file, $item);
+    }
+  }
+
+  public function saveFileXMLText(File $file, $item)
+  {
+
+    if ($file->getExtension() != self::XML_EXT) {
+      return;
+    }
+
+    $elementId = $this->getXMLSearchElementId();
+
+    if ($this->isTextExtracted($item)) {
+      // delete the element
+      $item->deleteElementTextsByElementId(array($elementId));
+    }
+
+    $et = new ElementText;
+    $et->record_id = $file->item_id;
+    $et->element_id = $elementId;
+    $et->record_type = self::XML_TEXT_ELEMENT_RECORD_TYPE;
+    $et->html = false;
+    $et->text = $this->extractXML($file);
+    if ($et->text != NULL) {
+      $et->save();
+    }
+  }
+
+  private function getXMLSearchElementId()
+  {
+    return $this->_db->getTable('Element')->findByElementSetNameAndElementName(self::XML_TEXT_ELEMENT_SET_NAME,
+                                             self::XML_TEXT_ELEMENT_NAME)->id;
+  }
+
+  private function getXMLSearchElementFileId()
+  {
+    return $this->_db->getTable('Element')->findByElementSetNameAndElementName(self::XML_TEXT_ELEMENT_SET_NAME,
+                                             self::XML_TEXT_ELEMENT_FILE_NAME)->id;
+  }
+
+  public function extractXML(File $file)
+  {
+    $path = FILES_DIR . "/original/" . $file->filename;
+    $xml = simplexml_load_file($path);
+    $node = dom_import_simplexml($xml);
+    return $node->textContent;
+  }
 
   public function hookConfigForm()
   {
@@ -81,7 +165,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $db = $this->_db;
       $sql = "DROP TABLE IF EXISTS `{$db->prefix}open_seadragon_tei_viewers`";
       $db->query($sql);
-      $this->_removeXSLDir();
+      $this->_db->getTable('ElementSet')->findByName(self::XML_TEXT_ELEMENT_SET_NAME)->delete();
       $this->_uninstallOptions();
   }
   /**
@@ -92,6 +176,12 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       add_translation_source(dirname(__FILE__) . '/languages');
       get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'OpenSeadragonTEI_View_Helper');
       add_shortcode('video_player', array($this, 'get_video_player'));
+
+  }
+
+  public function hookUpgrade()
+  {
+    $this->createElementSet();
   }
 
   public function hookDefineAcl($args)
@@ -103,6 +193,20 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $acl->add($indexResource);
 
       $acl->allow(array('super', 'admin'), array('OpenSeadragonTEI_Index'));
+  }
+
+  public function hookAfterSaveItem($args)
+  {
+    $this->saveItemXMLText($args['record']);
+  }
+
+  public function hookAfterDeleteFile($file)
+  {
+    if ($file->getExtension() == 'xml') {
+      $item = $file->getItem();
+      $elementId = $this->getXMLSearchElementId();
+      $item->deleteElementTextsByElementId(array($elementId));
+    }
   }
 
   public function filterAdminNavigationMain($nav)
@@ -159,19 +263,14 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       return $nav;
   }
 
-  private function _createXSLDir()
+  public function filterDisplayElements($elementsBySet)
   {
-    if (!file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
-      mkdir(TRANSFORMATION_DIRECTORY_SYSTEM);
+    if (!is_admin_theme()) {
+      unset($elementsBySet[self::XML_TEXT_ELEMENT_SET_NAME]);
     }
+    return $elementsBySet;
   }
 
-  private function _removeXSLDir()
-  {
-    if (file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
-      rmdir(TRANSFORMATION_DIRECTORY_SYSTEM);
-    }
-  }
 
   private function getAllViewerItemTypes()
   {
@@ -268,6 +367,25 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     $mime = $args['mime'];
     echo $view->partial('common/video-viewer.php', array('videoUrl' => $videoUrl, 'mime' => $mime));
   }
+
+  public static function disableForm($html, $inputNameStem)
+  {
+    return __v()->formTextArea($inputNameStem . '[text]',
+                               $value,
+                               array('disabled' => 'disabled',
+                                     'class' => 'textinput',
+                                     'rows' => 15,
+                                     'cols' => 50));
+  }
+
+  public static function disableDisplay($text, $record)
+  {
+    if (!is_admin_theme()) {
+      $text = '';
+    }
+    return $text;
+  }
+
 }
 
 ?>
