@@ -116,7 +116,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 
   public function saveFileXMLText(File $file, $item)
   {
-
     if ($file->getExtension() != self::XML_EXT) {
       return;
     }
@@ -213,13 +212,15 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   {
     $this->saveItemXMLText($args['record']);
   }
-
-  public function hookAfterDeleteFile($file)
+  // $file is actually an array of records
+  public function hookAfterDeleteFile($files)
   {
-    if ($file->getExtension() == 'xml') {
-      $item = $file->getItem();
-      $elementId = $this->getXMLSearchElementId();
-      $item->deleteElementTextsByElementId(array($elementId));
+    foreach($files as $file) {
+      if ($file->getExtension() == 'xml') {
+        $item = $file->getItem();
+        $elementId = $this->getXMLSearchElementId();
+        $item->deleteElementTextsByElementId(array($elementId));
+      }
     }
   }
 
