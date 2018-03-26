@@ -14,9 +14,12 @@ require_once dirname(__FILE__) . '/helpers/OpenSeadragonTEIFunctions.php';
 require_once dirname(__FILE__) . '/helpers/OpenSeadragonFunctions.php';
 $appRoot = getcwd();
 define('VIEWER_ROOT', dirname(__FILE__));
-define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
+/*define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
 //In case anybody changes the plugin filename we can still serve up the uploaded files
-define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');
+define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');*/
+define('TRANSFORMATION_DIRECTORY_SYSTEM', FILES_DIR . '/xsl/');
+//In case anybody changes the plugin filename we can still serve up the uploaded files
+define('TRANSFORMATION_DIRECTORY_WEB', WEB_DIR . '/files/xsl');
 
 class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
 {
@@ -79,7 +82,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   private function createElementSet()
   {
     if ($this->_db->getTable('ElementSet')->findByName(self::XML_TEXT_ELEMENT_SET_NAME)) {
-      throw new Exception('An element set by the name ' . self::XML_TEXT_ELEMENT_SET_NAME . ' already exists. You must delete that element set to install this plugin.');
+      // throw new Exception('An element set by the name ' . self::XML_TEXT_ELEMENT_SET_NAME . ' already exists. You must delete that element set to install this plugin.');
+      // do nothing
+      return;
     }
     $elementSetMeta = array('name' => self::XML_TEXT_ELEMENT_SET_NAME,
                             'description' => 'This element set indexes the text from attached XML files and makes them searchable.');
@@ -195,6 +200,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   public function hookUpgrade()
   {
     $this->createElementSet();
+    $this->_createXSLDir();
   }
 
   public function hookDefineAcl($args)
@@ -286,6 +292,19 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     return $elementsBySet;
   }
 
+  private function _createXSLDir()
+  {
+    if (!file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
+      mkdir(TRANSFORMATION_DIRECTORY_SYSTEM);
+    }
+  }
+
+  private function _removeXSLDir()
+  {
+    if (file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
+      rmdir(TRANSFORMATION_DIRECTORY_SYSTEM);
+    }
+  }
 
   private function getAllViewerItemTypes()
   {
