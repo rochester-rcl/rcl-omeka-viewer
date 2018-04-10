@@ -138,7 +138,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
     public function getMetadata($item){
       $escapedMetadata = '';
       // Add the title
-      $escapedMetadata .= '<h2 class="item-meta-head" id="item-meta-title">' . metadata($item, array('Dublin Core', 'Title')) . '</h2>';
+      $escapedMetadata .= '<h4 class="item-meta-head" id="item-meta-title">' . metadata($item, array('Dublin Core', 'Title')) . '</h4>';
       $meta = all_element_texts($item, array('return_type' => 'array'));
       foreach($meta as $key=>$value){
         foreach($value as $title=>$meta){
