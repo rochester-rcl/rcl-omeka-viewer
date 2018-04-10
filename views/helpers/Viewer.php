@@ -11,7 +11,6 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
 
   public $_supportedDocExtensions = array('xml');
 
-  private $_vimeoItemTypeKey = 'vimeo_url';
 
   /**
    * Return a OpenSeadragon image viewer for the provided files.
@@ -26,7 +25,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       }
       // Filter out invalid images.
       $validFiles = array();
-
+      $validFiles['images'] = array();
       $validFiles['xml'] = array();
       foreach ($files as $file) {
           // A valid image must be a File record.
@@ -53,27 +52,13 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           }
 
       }
-      // check for vimeo urls
-      $vimeo = $this->checkForVimeoURL($item);
       // Return if there are no valid images.
-      if (!$validFiles && !$vimeo) {
+      if (!$validFiles) {
           return;
       }
       $viewer = $this->getViewer($item_type_id);
+
       if($viewer){
-        $meta = $this->getMetadata($item);
-        if ($vimeo) {
-          $videoViewer = array();
-          $videoViewer['osdViewer'] = 'video';
-          if (array_key_exists('images', $validFiles)) {
-            $videoViewer['poster'] = html_escape($validFiles['images'][0]->getWebPath('fullsize'));
-          }
-          $videoViewer['metadata'] = $meta;
-          $videoViewer['vimeoURL'] = $vimeo;
-          return $this->view->partial('common/viewer.php', array(
-              'viewer' => $videoViewer,
-          ));
-        }
         if (array_key_exists('video', $validFiles)) {
           $videoViewer = array();
           $videoViewer['osdViewer'] = 'video';
@@ -85,7 +70,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           if (array_key_exists('images', $validFiles)) {
             $videoViewer['poster'] = html_escape($validFiles['images'][0]->getWebPath('fullsize'));
           }
-          $videoViewer['metadata'] = $meta;
+          $videoViewer['metadata'] = $this->getMetadata($item);
           return $this->view->partial('common/viewer.php', array(
               'viewer' => $videoViewer,
             ));
@@ -98,7 +83,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
             'tileSources' => $this->getTileSources($validFiles['images']),
             'imageCount' => sizeof($validFiles['images']),
             'audio' => array_key_exists('audio', $validFiles) ? $this->getAudioSourceInfo($validFiles['audio'][0]) : NULL,
-            'metadata' => $meta,
+            'metadata' => $this->getMetadata($item),
             'tempImage' => html_escape($validFiles['images'][0]->getWebPath('original')),
             'osdViewer' => 'image',
             'page' => $page,
@@ -150,13 +135,6 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           return $pyramid;
       }
     }
-    public function checkForVimeoURL($item) {
-      $itemTypeTexts = item_type_elements($item);
-      if (array_key_exists($this->_vimeoItemTypeKey, $itemTypeTexts)) {
-        return $itemTypeTexts['vimeo_url'];
-      }
-      return false;
-    }
     public function getMetadata($item){
       $escapedMetadata = '';
       // Add the title
@@ -164,7 +142,9 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       $meta = all_element_texts($item, array('return_type' => 'array'));
       foreach($meta as $key=>$value){
         foreach($value as $title=>$meta){
-          $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">' . $title . '</h4><div class="item-meta-value">' . $meta[0] . '</div></span>';
+          if ($title !== 'Title') {
+            $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">' . $title . '</h4><div class="item-meta-value">' . $meta[0] . '</div></span>';
+          }
         }
       }
       // The tags
@@ -173,7 +153,6 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       }
       // The citation
       $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Citation</h4><div class="item-meta-value">' . $item->getCitation() . '</div></span>';
-
       return $escapedMetadata;
     }
     public function getVideoSourceInfo($videoFile) {
