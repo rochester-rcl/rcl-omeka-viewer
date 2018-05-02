@@ -5,7 +5,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
   public $xslFileDir;
   protected $_xslUrl;
   private $_requiredMimeTypes = array('application/xml');
-  private $_requiredExtensions = array('xsl');
+  private $_requiredExtensions = array('sef');
   protected $_record = 'OpenSeadragonTEIViewer';
   protected $_type = 'OpenSeadragonTEIViewer';
 
@@ -28,7 +28,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
   {
     $fileValidators = array();
     //$mimeValidator = new Omeka_Validate_File_MimeType('application/xml');
-    $extensionValidator = new Omeka_Validate_File_Extension('xsl');
+    $extensionValidator = new Omeka_Validate_File_Extension('sef');
     $fileValidators[] = $extensionValidator;
 
     $this->addElement('file', 'xsl_file', array(

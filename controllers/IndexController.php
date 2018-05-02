@@ -91,7 +91,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
 
     $fileValidators = array();
     //$mimeValidator = new Omeka_Validate_File_MimeType('application/xml');
-    $extensionValidator = new Omeka_Validate_File_Extension('xsl');
+    $extensionValidator = new Omeka_Validate_File_Extension('sef');
     $fileValidators[] = $extensionValidator;
 
     $form->addElement('file', 'xsl_file', array(
