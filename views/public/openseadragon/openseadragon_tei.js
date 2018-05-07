@@ -184,42 +184,48 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
   }
 
   var onSaxonLoad = function() {
-
       // Parse Attached XML
       /*var xsl = SaxonJS.requestXML(xslURL);
       var xml = SaxonJS.requestXML(xmlURL);
       var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);*/
-      SaxonJS.transform({
-        stylesheetLocation: xslURL,
-        sourceLocation: xmlURL,
-      }, function(result) {
-        // Set up metadata display
-        var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
-        // Set up TEI display
-        var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(result);
+        SaxonJS.transform({
+          stylesheetLocation: xslURL,
+          sourceLocation: xmlURL,
+        }, function(result) {
+          try {
+            let toString = new XMLSerializer().serializeToString(result);
+            // Set up metadata display
+            var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
+            // Set up TEI display
+            var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(toString);
 
-        var container = document.createElement('div');
-        container.className = 'tei-container';
-        var toolbar = document.getElementById('viewer-controls');
-        toolbar.appendChild(metadataPanel.metadataToggleButton);
-        toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
+            var container = document.createElement('div');
+            container.className = 'tei-container';
+            var toolbar = document.getElementById('viewer-controls');
+            toolbar.appendChild(metadataPanel.metadataToggleButton);
+            toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
 
-        var viewer = document.getElementById('osd-flex-container');
+            var viewer = document.getElementById('osd-flex-container');
 
-        viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
-        viewer.appendChild(metadataPanel.metadataElement);
-        //var viewer = document.getElementsByClassName('openseadragon');
-        //viewer.appendChild(container);
-        //viewer.insertBefore(container, viewer.childNodes[0]);
-        OpenSeadragonTEIViewer.prepareViewerFirstPage();
-        var personElements = document.getElementsByClassName('persname-popover');
-        var placeElements = document.getElementsByClassName('placename-popover');
-        OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
-        OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
-        OpenSeadragonTEIViewer.removeLoadingScreen();
-        if (callback) callback();
-      });
-    }
+            viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
+            viewer.appendChild(metadataPanel.metadataElement);
+            //var viewer = document.getElementsByClassName('openseadragon');
+            //viewer.appendChild(container);
+            //viewer.insertBefore(container, viewer.childNodes[0]);
+            OpenSeadragonTEIViewer.prepareViewerFirstPage();
+            var personElements = document.getElementsByClassName('persname-popover');
+            var placeElements = document.getElementsByClassName('placename-popover');
+            OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
+            OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
+            OpenSeadragonTEIViewer.removeLoadingScreen();
+            if (callback) callback();
+          } catch(error) {
+            console.log(error);
+            OpenSeadragonTEIViewer.imageViewerInit(this.metadata, this.name);
+            this.paginatorInit(this.imageCount);
+          }
+        });
+      }
     OpenSeadragonTEIViewer.setLoadingScreen();
     checkSaxon(onSaxonLoad);
 
