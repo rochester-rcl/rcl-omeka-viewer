@@ -4,16 +4,16 @@ OpenSeaDragon TEI Viewer is a plugin for Omeka Classic which makes it possible t
 
 In Omeka, Items are assigned Item Types which in turn determine the scope and structure of those records. OpenSeaDragon TEI Viewer functions by overriding the public display of items matching an Item Type you provide. In the plugin configuration area, any number of viewers with different settings can be created for different Item Types. These viewers can display multiple images in a pannable, zoomable gallery, or if a TEI file is attached to the item record and an XSLT file is attached to the configuration, a text transcription panel will also be displayed in the viewer, rendering the TEI in HTML.
 
-###Installing the Plugin
+### Installing the Plugin
 OpenSeaDragon TEI Viewer is installed just like any other plugin, by decompressing the zip file, and copying the resulting folder into Omeka’s plugins folder on the server. Next, log into the admin interface in your Omeka installation and click on Plugins at the top, and under OpenSeadragon TEI Viewer, click Install, and then Activate.
 
-###Configuration
+### Configuration
 Now that the plugin has been activated, TEI Viewer should appear in the menu bar on the left. Click on it to go into the plugin configuration area.
 
 Click Add a Viewer to bring up the Add Viewer form. Under Viewer Name, enter Text, under Upload XSLT Transformation, upload a copy of the default.xsl stylesheet file included in the plugin folder, and under Select Item Type to Apply the Viewer to, choose Text. Then click Save.
 ![Screenshot of Add Viewer interface](osd_tei_add_item.png)
 
-###Adding Items
+### Adding Items
 Add a new item by clicking Items in the left-hand menu, and then click Add an Item in the items listing that will appear. On the Dublin Core Tab, provide a Title and some other metadata in the other available fields. Click on the Item Type Metadata tab, and under Item Type, choose Text. Next, click on Files and then upload the images of your text and a TEI transcription of that text. Then, click Add Item.
 
 The default.xsl stylesheet included with the plugin comprises a very basic set of templates. While these can be customized, removed, or extended to meet your needs, here is what these templates assume by default:
