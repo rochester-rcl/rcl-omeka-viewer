@@ -18,12 +18,12 @@ Add a new item by clicking Items in the left-hand menu, and then click Add an It
 
 The default.xsl stylesheet included with the plugin comprises a very basic set of templates. While these can be customized, removed, or extended to meet your needs, here is what these templates assume by default:
 
-* Pages: Each page in the transcription are enclosed in a <div> tag with type=”page”. These <div>s are arranged one after another in the TEI file, and are numbered numerically using the n attribute (e.g., n=”1”, n=”2”, n=”3”, and so on)
-* Paragraphs: The text on each page is grouped using <p> tags.
-* Hyperlinks: These can be created in the TEI with a <ref> tag with type=”url”. Add the desired URL as a target attribute to the <ref> tag, like so:
-> `<ref type=”url” target=”http://www.google.com”>Google<\/ref\>`
-* Deleted Text:  <del> tags in TEI are rendered as `<span class=”deleted-text”>` and styled via CSS with a strikethrough.
-* Added Text: <add> tags in TEI are rendered as <span class=”add”>. place=”above” can be added to the <add> tag to raise the baseline of the text to superscript position.
-Underlined Text: <hi rend=”underline”> is rendered as <span class=”underline”>.
-* Note: Inline notes can be added to the TEI with a <note> tag. This inserts a [*] button which when clicked opens up a small popup dialog containing the note.
-* Line break: <lb> in TEI is rendered as <br> in HTML
+* Pages: Each page in the transcription are enclosed in a `<div>` tag with `type="page"`. These `<div>`s are arranged one after another in the TEI file, and are numbered numerically using the n attribute (e.g., `n="1"`, `n="2"`, `n="3"`, and so on)
+* Paragraphs: The text on each page is grouped using `<p>` tags.
+* Hyperlinks: These can be created in the TEI with a `<ref>` tag with `type="url"`. Add the desired URL as a target attribute to the `<ref>` tag, like so:
+```<ref type="url" target="http://www.google.com">Google</ref>```
+* Deleted Text:  `<del>` tags in TEI are rendered as `<span class="deleted-text">` and styled via CSS with a strikethrough.
+* Added Text: `<add>` tags in TEI are rendered as `<span class="add">`. `place=”above”` can be added to the `<add>` tag to raise the baseline of the text to superscript position.
+Underlined Text: `<hi rend=”underline”>` is rendered as `<span class="underline">`.
+* Note: Inline notes can be added to the TEI with a `<note>` tag. This inserts a [*] button which when clicked opens up a small popup dialog containing the note.
+* Line break: `<lb/>` in TEI is rendered as `<br/>` in HTML
