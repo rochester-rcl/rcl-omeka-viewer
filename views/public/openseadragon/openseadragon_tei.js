@@ -188,13 +188,13 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       /*var xsl = SaxonJS.requestXML(xslURL);
       var xml = SaxonJS.requestXML(xmlURL);
       var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);*/
+      try {
         SaxonJS.transform({
           stylesheetLocation: xslURL,
           sourceLocation: xmlURL,
         }, function(result) {
-          try {
             let toString = new XMLSerializer().serializeToString(result);
-            
+
             // Set up metadata display
             var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
             // Set up TEI display
@@ -220,16 +220,15 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
             OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
             OpenSeadragonTEIViewer.removeLoadingScreen();
             if (callback) callback();
-          } catch(error) {
-            console.log(error);
-            OpenSeadragonTEIViewer.imageViewerInit(this.metadata, this.name);
-            this.paginatorInit(this.imageCount);
-          }
         });
+        OpenSeadragonTEIViewer.setLoadingScreen();
+        checkSaxon(onSaxonLoad);
+      } catch(error) {
+        console.log(error);
+        OpenSeadragonTEIViewer.imageViewerInit(this.metadata, this.name);
+        this.paginatorInit(this.imageCount);
       }
-    OpenSeadragonTEIViewer.setLoadingScreen();
-    checkSaxon(onSaxonLoad);
-
+    }
   }
 
   OpenSeadragonTEIViewer.formatModal = function(elements, displayType) {
