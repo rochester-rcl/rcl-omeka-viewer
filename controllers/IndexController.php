@@ -68,7 +68,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
       $checkedState = FALSE;
     }
     $form->addElement('checkbox', 'xsl_viewer_option', array(
-        'label' => __('Use an XSLT File for Rendering'),
+        'label' => __('Use a SEF File for Rendering'),
         'description' => 'Check this box to add a rendering component for attached XML files.',
         'checked_value' => 1,
         'unchecked_value' => 0,
@@ -95,7 +95,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
     $fileValidators[] = $extensionValidator;
 
     $form->addElement('file', 'xsl_file', array(
-        'label' => __('Upload XSLT Transformation'),
+        'label' => __('Upload SEF Transformation'),
         'required' => false,
         'validators' => $fileValidators,
         'description' => 'Upload a file to transform associated TEI files.

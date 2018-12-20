@@ -32,7 +32,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     $fileValidators[] = $extensionValidator;
 
     $this->addElement('file', 'xsl_file', array(
-        'label' => __('Upload XSLT Transformation'),
+        'label' => __('Upload SEF Transformation'),
         'required' => false,
         'validators' => $fileValidators,
         'description' => 'Upload a file to transform associated TEI files.',
@@ -53,7 +53,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
   protected function _addCheckboxElement()
   {
     $this->addElement('checkbox', 'xsl_viewer_option', array(
-      'label' => __('Use an XSLT File for Rendering'),
+      'label' => __('Use an SEF File for Rendering'),
       'description' => 'Check this box to add a rendering component for attached XML files.',
       'checked_value' => 1,
       'unchecked_value' => 0,

@@ -194,6 +194,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
         }, function(result) {
           try {
             let toString = new XMLSerializer().serializeToString(result);
+            
             // Set up metadata display
             var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
             // Set up TEI display

@@ -203,9 +203,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     }
   }
 
-    /**
-    * Display the image viewer in public items/show.
-    */
+  /**
+  * Display the image viewer in public items/show.
+  */
   public function hookPublicItemsShow($args)
   {
       $helper = $args['view']->getHelper('viewer');
