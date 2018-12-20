@@ -35,7 +35,7 @@
     <?php
         queue_js_file('lib/bootstrap.min');
         queue_js_file('globals');
-        queue_js_file('Saxonce.nocache', 'Saxonce');
+        queue_js_file('SaxonJS.min', 'Saxon-JS-1.0.2');
         queue_js_file('video.min', 'videojs');
         queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
         queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
