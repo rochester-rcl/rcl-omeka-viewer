@@ -182,7 +182,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       }, 100);
     }
   }
-
+  // No point in catching errors as SaxonJS.transform is async and has no onError callback and Promises still aren't supported across all browsers
   var onSaxonLoad = function() {
       // Parse Attached XML
       /*var xsl = SaxonJS.requestXML(xslURL);
@@ -192,9 +192,8 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
           stylesheetLocation: xslURL,
           sourceLocation: xmlURL,
         }, function(result) {
-          try {
             let toString = new XMLSerializer().serializeToString(result);
-            
+
             // Set up metadata display
             var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
             // Set up TEI display
@@ -220,16 +219,10 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
             OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
             OpenSeadragonTEIViewer.removeLoadingScreen();
             if (callback) callback();
-          } catch(error) {
-            console.log(error);
-            OpenSeadragonTEIViewer.imageViewerInit(this.metadata, this.name);
-            this.paginatorInit(this.imageCount);
-          }
         });
       }
     OpenSeadragonTEIViewer.setLoadingScreen();
     checkSaxon(onSaxonLoad);
-
   }
 
   OpenSeadragonTEIViewer.formatModal = function(elements, displayType) {
