@@ -74,13 +74,19 @@
           switch(osdViewer.osdViewerType){
             case 'tei':
               osdViewer.openSeadragonInit();
-              OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
+              if (osdViewer.xmlURL !== undefined) {
+                OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
+                  osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
+                  if (osdViewer.anchor) {
+                    location.hash = "#" + osdViewer.anchor;
+                  }
+                });
+                osdViewer.paginatorInit(osdViewer.imageCount);
+              } else {
+                OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
+                osdViewer.paginatorInit(osdViewer.imageCount);
                 osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
-                if (osdViewer.anchor) {
-                  location.hash = "#" + osdViewer.anchor;
-                }
-              });
-              osdViewer.paginatorInit(osdViewer.imageCount);
+              }
               break;
             case 'image':
               osdViewer.openSeadragonInit();
