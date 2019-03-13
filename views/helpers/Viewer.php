@@ -169,6 +169,13 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       if (metadata($item, 'has tags')) {
         $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Tags</h4><div class="item-meta-value">' .  tag_string($item) . '</div></span>';
       }
+      // The collection 
+      $collection = get_collection_for_item($item);
+      if ($collection) {
+        $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Collection</h4><div class="item-meta-value">' . link_to_collection(NULL, [], 'show', $collection) . '</div></span>';
+      }
+      // The citation
+      $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Citation</h4><div class="item-meta-value">' . $item->getCitation() . '</div></span>';
       return $escapedMetadata;
     }
     public function getVideoSourceInfo($videoFile) {
