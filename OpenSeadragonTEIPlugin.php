@@ -47,7 +47,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     'public_navigation_main',
     'page_caching_whitelist',
     'exhibit_layouts',
-    'display_elements',
     'disableDisplay' => array('Display', 'Item', self::XML_TEXT_ELEMENT_SET_NAME, self::XML_TEXT_ELEMENT_NAME),
     'disableForm' => array('Form', 'Item', self::XML_TEXT_ELEMENT_SET_NAME, self::XML_TEXT_ELEMENT_NAME),
   );
