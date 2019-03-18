@@ -180,11 +180,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $db = $this->_db;
       $sql = "DROP TABLE IF EXISTS `{$db->prefix}open_seadragon_tei_viewers`";
       $db->query($sql);
-<<<<<<< HEAD
-      $this->_db->getTable('ElementSet')->findByName(self::XML_TEXT_ELEMENT_SET_NAME)->delete();
-=======
       $this->_removeXSLDir();
->>>>>>> saxon-js-upgrade
       $this->_uninstallOptions();
   }
   /**
@@ -284,17 +280,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       return $nav;
   }
 
-<<<<<<< HEAD
-  public function filterDisplayElements($elementsBySet)
-  {
-    if (!is_admin_theme()) {
-      unset($elementsBySet[self::XML_TEXT_ELEMENT_SET_NAME]);
-    }
-    return $elementsBySet;
-  }
-
-=======
->>>>>>> saxon-js-upgrade
   private function _createXSLDir()
   {
     if (!file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
