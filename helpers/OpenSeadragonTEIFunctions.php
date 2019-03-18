@@ -23,7 +23,7 @@ function open_seadragon_tei_get_viewer($item_type_id)
   if ($item_type_id) {
     $db = get_db();
     $select = $db->select()
-    ->from('omeka_open_seadragon_tei_viewers')
+    ->from($db->prefix . 'open_seadragon_tei_viewers')
     ->where('item_type_id = '.$item_type_id);
 
     $stmt = $db->query($select);
@@ -168,25 +168,6 @@ function sort_item_search_results($items)
     }
   }
   return $itemTypeArray;
-}
-
-function get_featured_encounters($numEncounters)
-{
-  $results = get_records('Exhibit', array('featured' => 1,
-                                          'tags' => 'encounter',
-                                          'order' => 'd',
-                                          'public' => 1), $numEncounters);
-  $encounterMarkupArray = array();
-  foreach($results as $record) {
-    $containerOpen = '<div class="hp-buttons-imgs">';
-    $encounterTitle = '<div class="hp_buttons_imgs_text">' . $record->title . '</div>';
-    $imageMarkup = record_image($record, 'fullsize');
-    $encounterLink = '<a href="' . '/encounters/' . $record->slug . '/page/1' . '">' . $imageMarkup . '</a>';
-    $containerClose = '</div>';
-    $containerOpen .= $encounterTitle .= $encounterLink .= $containerClose;
-    array_push($encounterMarkupArray, $containerOpen);
-  }
-  return implode($encounterMarkupArray);
 }
 
 function check_files($item)

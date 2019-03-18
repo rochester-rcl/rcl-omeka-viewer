@@ -1,51 +1,57 @@
 <div class="openseadragon" id="openseadragon-viewer-container">
       <?php if ($viewer['osdViewer'] === 'video') : ?>
         <?php
-          $videoUrl = $viewer['videos'][0]->videoUrl;
-          $videoMimeType = $viewer['videos'][0]->videoMimeType;
-          if($viewer['poster']){
+          $vimeo = array_key_exists('vimeoURL', $viewer);
+          $videoUrl = ($vimeo ? $viewer['vimeoURL'] : $viewer['videos'][0]->videoUrl);
+          $videoMimeType = ($vimeo ? "video/vimeo" : $viewer['videos'][0]->videoMimeType);
+          if(array_key_exists('poster', $viewer)){
             $poster = $viewer['poster'];
           } else {
             $poster = 'false';
           }
         ?>
-        <div id="video-viewer">
-          <div class="toolbar" id="video-controls">
-            <div class="toolbar-button" onClick="navBack()" alt="go back" id="back"><i class="fa fa-angle-double-left fa-3x" aria-hidden="false"></i></div>
-          </div>
-          <video id="display-video" class="video-js vjs-default-skin vjs-big-play-centered">
-            <source src="<?=$videoUrl?>" type="<?=$videoMimeType?>">
-          </video>
-          <script>
-            var player = videojs('display-video', {
-              controls: true,
-              fluid: true,
-              inactivityTimeout: false,
-              poster: '<?=$poster?>',
-              plugins: {
-                nleControls: {
-                  smpteTimecode: true,
-                  frameControls: true,
-                  framerate: 24.0,
-                },
-                framerate: {
-                  origFramerate: 24.0,
+        <div class="openseadragon-flex-container" id="osd-flex-container">
+          <div id="video-viewer">
+            <div class="toolbar" id="video-controls">
+              <div class="toolbar-button" onClick="navBack()" alt="go back" id="back"><i class="fa fa-angle-double-left fa-3x" aria-hidden="false"></i></div>
+            </div>
+            <video
+              id="display-video"
+              class="video-js vjs-default-skin vjs-big-play-centered"
+              data-setup='{"techOrder": ["html5", "vimeo"], "sources": [{"type": "<?=$videoMimeType?>", "src": "<?=$videoUrl?>"}]}'
+              >
+            </video>
+            <script>
+              var player = videojs('display-video', {
+                controls: true,
+                fluid: true,
+                inactivityTimeout: false,
+                poster: '<?=$poster?>',
+                plugins: {
+                  nleControls: {
+                    smpteTimecode: true,
+                    frameControls: true,
+                    framerate: 24.0,
+                  },
+                  framerate: {
+                    origFramerate: 24.0,
+                  }
                 }
+              });
+
+              var metadataContainer = document.createElement('div');
+              metadataContainer.id = "item-metadata";
+              metadataContainer.className = "tei-viewer";
+              metadataContainer.innerHTML = '<?=$viewer['metadata']?>';
+              var videoViewer = document.getElementById('osd-flex-container');
+              videoViewer.appendChild(metadataContainer);
+
+              function navBack() {
+                window.history.back();
               }
-            });
-
-            var metadataContainer = document.createElement('div');
-            metadataContainer.id = "item-metadata";
-            metadataContainer.className = "tei-viewer";
-            metadataContainer.innerHTML = '<?=$viewer['metadata']?>';
-            var videoViewer = document.getElementById('openseadragon-viewer-container');
-            videoViewer.appendChild(metadataContainer);
-
-            function navBack() {
-              window.history.back();
-            }
-        </script>
-    </div>
+          </script>
+        </div>
+      </div>
     <?php else : ?>
       <?php $jsonViewer = json_encode($viewer);?>
       <div class="toolbar" id="viewer-controls">
@@ -68,13 +74,19 @@
           switch(osdViewer.osdViewerType){
             case 'tei':
               osdViewer.openSeadragonInit();
-              OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
+              if (osdViewer.xmlURL !== undefined) {
+                OpenSeadragonTEIViewer.saxonInit(osdViewer.xslURL, osdViewer.xmlURL, osdViewer.metadata, osdViewer.name, function() {
+                  osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
+                  if (osdViewer.anchor) {
+                    location.hash = "#" + osdViewer.anchor;
+                  }
+                });
+                osdViewer.paginatorInit(osdViewer.imageCount);
+              } else {
+                OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);
+                osdViewer.paginatorInit(osdViewer.imageCount);
                 osdViewer.viewer.goToPage(<?=$viewer['page'] - 1?>);
-                if (osdViewer.anchor) {
-                  location.hash = "#" + osdViewer.anchor;
-                }
-              });
-              osdViewer.paginatorInit(osdViewer.imageCount);
+              }
               break;
             case 'image':
               osdViewer.openSeadragonInit();

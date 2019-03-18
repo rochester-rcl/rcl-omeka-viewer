@@ -27,14 +27,16 @@
     echo head_css();
     ?>
     <?php
-      queue_js_file('Saxonce.nocache', 'Saxon-CE/Saxonce');
+      queue_js_file('SaxonJS.min', 'Saxon-JS-1.0.2');
       queue_js_file('video.min', 'videojs');
       queue_js_file('videojs-nle-controls.min', 'rcl-vjs-nle/dist');
       queue_js_file('videojs-framerate', 'rcl-vjs-framerate');
+      queue_js_file('videojs-vimeo.min', 'vjs-vimeo');
       queue_js_file('openseadragon.min', 'openseadragon');
       queue_js_file('openseadragon_tei', 'openseadragon');
       queue_js_url("https://use.fontawesome.com/aadd731529.js");
-      queue_js_url("https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.6.0/lazyload.min.js");
+      queue_js_file('lazyload.min', 'lazyload');
+
     ?>
     <?php queue_js_file('vendor/selectivizr', 'javascripts', array('conditional' => '(gte IE 6)&(lte IE 8)')); ?>
     <?php queue_js_file('vendor/respond'); ?>

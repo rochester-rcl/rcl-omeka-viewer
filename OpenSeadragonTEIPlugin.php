@@ -14,9 +14,6 @@ require_once dirname(__FILE__) . '/helpers/OpenSeadragonTEIFunctions.php';
 require_once dirname(__FILE__) . '/helpers/OpenSeadragonFunctions.php';
 $appRoot = getcwd();
 define('VIEWER_ROOT', dirname(__FILE__));
-/*define('TRANSFORMATION_DIRECTORY_SYSTEM', dirname(__FILE__) . '/views/shared/xsl/');
-//In case anybody changes the plugin filename we can still serve up the uploaded files
-define('TRANSFORMATION_DIRECTORY_WEB', 'plugins/' . basename(__DIR__) . '/views/shared/xsl');*/
 define('TRANSFORMATION_DIRECTORY_SYSTEM', FILES_DIR . '/xsl/');
 //In case anybody changes the plugin filename we can still serve up the uploaded files
 define('TRANSFORMATION_DIRECTORY_WEB', WEB_DIR . '/files/xsl');
@@ -73,7 +70,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       PRIMARY KEY (`id`)
       ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $db->query($sql);
-
+      $this->_createXSLDir();
       $this->_installOptions();
       $this->createElementSet();
 
@@ -183,7 +180,11 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       $db = $this->_db;
       $sql = "DROP TABLE IF EXISTS `{$db->prefix}open_seadragon_tei_viewers`";
       $db->query($sql);
+<<<<<<< HEAD
       $this->_db->getTable('ElementSet')->findByName(self::XML_TEXT_ELEMENT_SET_NAME)->delete();
+=======
+      $this->_removeXSLDir();
+>>>>>>> saxon-js-upgrade
       $this->_uninstallOptions();
   }
   /**
@@ -194,7 +195,6 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       add_translation_source(dirname(__FILE__) . '/languages');
       get_view()->addHelperPath(dirname(__FILE__) . '/views/helpers', 'OpenSeadragonTEI_View_Helper');
       add_shortcode('video_player', array($this, 'get_video_player'));
-
   }
 
   public function hookUpgrade()
@@ -284,6 +284,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       return $nav;
   }
 
+<<<<<<< HEAD
   public function filterDisplayElements($elementsBySet)
   {
     if (!is_admin_theme()) {
@@ -292,6 +293,8 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     return $elementsBySet;
   }
 
+=======
+>>>>>>> saxon-js-upgrade
   private function _createXSLDir()
   {
     if (!file_exists(TRANSFORMATION_DIRECTORY_SYSTEM)) {
@@ -336,9 +339,9 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
     }
   }
 
-    /**
-    * Display the image viewer in public items/show.
-    */
+  /**
+  * Display the image viewer in public items/show.
+  */
   public function hookPublicItemsShow($args)
   {
       $helper = $args['view']->getHelper('viewer');
