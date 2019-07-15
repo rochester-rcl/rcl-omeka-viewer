@@ -328,22 +328,25 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   */
   public function hookPublicItemsShow($args)
   {
-      $helper = $args['view']->getHelper('viewer');
-
-      $extensions = array_merge($helper->_supportedImageExtensions,
+      $url = $_SERVER['REQUEST_URI'];
+      if (!strpos($url, '/viewer/')) {
+        $helper = $args['view']->getHelper('viewer');
+        $extensions = array_merge($helper->_supportedImageExtensions,
         $helper->_supportedVideoExtensions,
         $helper->_supportedDocExtensions,
         $helper->_supportedAudioExtensions);
 
-      if(get_option('openseadragontei_override_items_show') && !is_admin_theme()) {
-        $viewerInfo = open_seadragon_tei_get_viewer($args['item']->item_type_id);
-        if (check_files($args['item'])) {
-          if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
-            header("Location: " . absolute_url('viewer/' . $args['item']->id));
-            exit;
+        if(get_option('openseadragontei_override_items_show') && !is_admin_theme()) {
+          $viewerInfo = open_seadragon_tei_get_viewer($args['item']->item_type_id);
+          if (check_files($args['item'])) {
+            if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
+              header("Location: " . absolute_url('viewer/' . $args['item']->id));
+              exit;
+            }
           }
         }
       }
+      
       // to append to items show
       //echo $args['view']->viewer($args['item']->Files, $args['item']->item_type_id, $args['item']);
   }

@@ -86,6 +86,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
             $videoViewer['poster'] = html_escape($validFiles['images'][0]->getWebPath('fullsize'));
           }
           $videoViewer['metadata'] = $meta;
+          $videoViewer['item'] = $item;
           return $this->view->partial('common/viewer.php', array(
               'viewer' => $videoViewer,
             ));
@@ -116,7 +117,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           } else {
             $openSeadragonViewer['osdViewer'] = 'image';
           }
-
+          $openSeadragonViewer['item'] = $item;
           return $this->view->partial('common/viewer.php', array(
               'viewer' => $openSeadragonViewer,
             ));
@@ -178,6 +179,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       }
       // The citation
       $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">Citation</h4><div class="item-meta-value">' . $item->getCitation() . '</div></span>';
+
       return $escapedMetadata;
     }
     public function getVideoSourceInfo($videoFile) {
