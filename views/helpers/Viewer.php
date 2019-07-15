@@ -165,7 +165,12 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       $meta = all_element_texts($item, array('return_type' => 'array'));
       foreach($meta as $key=>$value){
         foreach($value as $title=>$meta){
-          $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">' . $title . '</h4><div class="item-meta-value">' . $meta[0] . '</div></span>';
+          $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">' 
+            . $title . '</h4>';
+          foreach($meta as $md) {
+            $escapedMetadata .= '<div class="item-meta-value">' . $md . '</div>';
+          }
+          $escapedMetadata .= '</span>';
         }
       }
       // The tags
@@ -195,5 +200,3 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       return $audioSource;
     }
 }
-
- ?>
