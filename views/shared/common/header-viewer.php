@@ -35,7 +35,8 @@
       queue_js_file('openseadragon.min', 'openseadragon');
       queue_js_file('openseadragon_tei', 'openseadragon');
       queue_js_url("https://use.fontawesome.com/aadd731529.js");
-      queue_js_file('lazyload.min', 'lazyload');
+      // queue_js_file('lazyload.min', 'lazyload');
+      queue_js_url("https://cdnjs.cloudflare.com/ajax/libs/vanilla-lazyload/8.6.0/lazyload.min.js");
 
     ?>
     <?php queue_js_file('vendor/selectivizr', 'javascripts', array('conditional' => '(gte IE 6)&(lte IE 8)')); ?>
