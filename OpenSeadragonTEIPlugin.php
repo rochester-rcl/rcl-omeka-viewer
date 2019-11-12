@@ -329,7 +329,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
   public function hookPublicItemsShow($args)
   {
       $url = $_SERVER['REQUEST_URI'];
-      if (!strpos($url, '/viewer/')) {
+      if (strpos($url, '/viewer/') === false) {
         $helper = $args['view']->getHelper('viewer');
         $extensions = array_merge($helper->_supportedImageExtensions,
         $helper->_supportedVideoExtensions,
@@ -341,7 +341,7 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
           if (check_files($args['item'])) {
             if (sizeof($viewerInfo) > 0 && validate_extensions($args['item']->Files, $extensions)) {
               header("Location: " . absolute_url('viewer/' . $args['item']->id));
-              exit;
+              exit();
             }
           }
         }
