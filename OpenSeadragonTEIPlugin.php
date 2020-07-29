@@ -192,10 +192,16 @@ class OpenSeadragonTEIPlugin extends Omeka_Plugin_AbstractPlugin
       add_shortcode('video_player', array($this, 'get_video_player'));
   }
 
-  public function hookUpgrade()
+  public function hookUpgrade($info)
   {
+    $db = $this->_db;
     $this->createElementSet();
     $this->_createXSLDir();
+    if ($info["old_version"] < "0.0.4")
+    {
+      $updateTable = "ALTER TABLE `{$db->prefix}open_seadragon_tei_viewers` ADD COLUMN `transcriptions_field_id` int(10) unsigned";
+      $db->query($updateTable);
+    }
   }
 
   public function hookDefineAcl($args)

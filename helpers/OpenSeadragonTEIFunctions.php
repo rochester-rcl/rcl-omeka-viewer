@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenSeadragon TEI Viewer Plugin (based on DPLA Omeka OpenSeadragon Plugin)
  *
@@ -7,15 +8,44 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  */
 
-function open_seadragon_tei_get_item_types(){
+function open_seadragon_tei_get_item_types()
+{
   $db = get_db();
   $sql = $db->query("SELECT DISTINCT id, name FROM `{$db->prefix}item_types`");
   $results = $sql->fetchAll();
   $itemTypes = array();
-  foreach($results as $result){
+  foreach ($results as $result) {
     $itemTypes[$result['id']] = $result['name'];
   }
   return $itemTypes;
+}
+
+function open_seadragon_tei_get_all_fieldnames($include_name = true)
+{
+  $db = get_db();
+  $dcElements = $db->getTable('Element')->findBySet('Dublin Core');
+  $itemTypeElements = $db->getTable('Element')->findBySet('Item Type Metadata');
+  $results = array_merge($dcElements, $itemTypeElements);
+  $fields = [];
+  foreach ($results as $result) {
+    if ($include_name) {
+      $fields[$result->id] = $result->name;
+    } else {
+      array_push($fields, $result->id);
+    }
+  }
+  return $fields;
+}
+
+function get_element_name($element_id)
+{
+  $db = get_db();
+  // TODO need to figure out how to do findBy Id
+  $elements = $db->getTable('Element')->findBy(["id" => $element_id]);
+  var_dump($elements);
+  die;
+  if ($elements) return $elements[0]->name;
+  return null;
 }
 
 function open_seadragon_tei_get_viewer($item_type_id)
@@ -23,8 +53,8 @@ function open_seadragon_tei_get_viewer($item_type_id)
   if ($item_type_id) {
     $db = get_db();
     $select = $db->select()
-    ->from($db->prefix . 'open_seadragon_tei_viewers')
-    ->where('item_type_id = '.$item_type_id);
+      ->from($db->prefix . 'open_seadragon_tei_viewers')
+      ->where('item_type_id = ' . $item_type_id);
 
     $stmt = $db->query($select);
     $result = $stmt->fetchAll();
@@ -71,24 +101,26 @@ function get_item_type_meta($item)
   $itemTypeId = $item->item_type_id;
   $db = get_db();
   $select = $db->select()
-  ->from($db->prefix . 'item_types')
-  ->where('id = ' . $item->item_type_id);
+    ->from($db->prefix . 'item_types')
+    ->where('id = ' . $item->item_type_id);
   $stmt = $db->query($select);
   $results = $stmt->fetchAll();
   return $results[0];
 }
 
-function slugify($name) {
+function slugify($name)
+{
   return strtolower(str_replace(' ', '-', $name));
 }
 
-function de_slugify($name) {
+function de_slugify($name)
+{
   return ucwords(str_replace('-', ' ', $name));
 }
 
 function sort_search_results($searchTextArray)
 {
-  $recordTypes = array_unique(array_map(function($searchText){
+  $recordTypes = array_unique(array_map(function ($searchText) {
     $recordType = $searchText['record_type'];
     if ($recordType === 'SimplePagesPage') return 'page';
     return $searchText['record_type'];
@@ -98,11 +130,11 @@ function sort_search_results($searchTextArray)
   $recordResultArray = array();
   $itemResultArray = array();
   $itemTypeInfo = array();
-  foreach($searchTextArray as $searchText) {
+  foreach ($searchTextArray as $searchText) {
     $recordType = $searchText['record_type'];
     $recordResult;
     $itemTypes = array();
-    if($recordType === 'Item') {
+    if ($recordType === 'Item') {
       $item = get_record_by_id($searchText['record_type'], $searchText['record_id']);
       if ($item->item_type_id) {
         $itemTypeName = get_item_type_meta($item)['name'];
@@ -111,32 +143,31 @@ function sort_search_results($searchTextArray)
       }
       $itemTypeSlug = slugify($itemTypeName);
       $recordResult = array(
-                        'title' => metadata($item, array('Dublin Core', 'Title')),
-                        'item_type_id' => $item->item_type_id,
-                        'item_type_name' => $itemTypeName,
-                        'item_type_slug' => $itemTypeSlug,
-                        'image_markup' => metadata($item, 'has files') ? lazy_load_image('square_thumbnail', $item) : NULL,
-                        'url' => url('viewer/' . $item->id),
-                       );
-      if(!array_key_exists($itemTypeSlug, $itemResultArray)) {
+        'title' => metadata($item, array('Dublin Core', 'Title')),
+        'item_type_id' => $item->item_type_id,
+        'item_type_name' => $itemTypeName,
+        'item_type_slug' => $itemTypeSlug,
+        'image_markup' => metadata($item, 'has files') ? lazy_load_image('square_thumbnail', $item) : NULL,
+        'url' => url('viewer/' . $item->id),
+      );
+      if (!array_key_exists($itemTypeSlug, $itemResultArray)) {
         $itemResultArray[$itemTypeSlug] = array($recordResult);
       } else {
         array_push($itemResultArray[$itemTypeSlug], $recordResult);
       }
       $formattedResults[$recordType] = $itemResultArray;
     }
-    if($recordType === 'SimplePagesPage') {
+    if ($recordType === 'SimplePagesPage') {
       $record = get_record_by_id($searchText['record_type'], $searchText['record_id']);
       $recordResult = array(
-                      'title' => $record->title,
-                      'url' => $record->getRecordUrl(),
-                      'image_markup' => '<i class="fa fa-file-text fa-5x" aria-hidden="true"></i>',
-                      'record_type_slug' => 'simple-page',
+        'title' => $record->title,
+        'url' => $record->getRecordUrl(),
+        'image_markup' => '<i class="fa fa-file-text fa-5x" aria-hidden="true"></i>',
+        'record_type_slug' => 'simple-page',
       );
       array_push($recordResultArray, $recordResult);
       $formattedResults['page'] = $recordResultArray;
     }
-
   }
   return $formattedResults;
 }
@@ -144,7 +175,7 @@ function sort_search_results($searchTextArray)
 function sort_item_search_results($items)
 {
   $itemTypeArray = array();
-  foreach($items as $item) {
+  foreach ($items as $item) {
     $itemTypeId = $item->item_type_id;
     if ($itemTypeId) {
       $itemTypeName = get_item_type_meta($item)['name'];
@@ -153,16 +184,15 @@ function sort_item_search_results($items)
     }
     $itemTypeSlug = slugify($itemTypeName);
     $itemResult = array(
-                      'title' => metadata($item, array('Dublin Core', 'Title')),
-                      'item_type_id' => $item->item_type_id,
-                      'item_type_name' => $itemTypeName,
-                      'item_type_slug' => $itemTypeSlug,
-                      'image_markup' => metadata($item, 'has files') ? lazy_load_image('square_thumbnail', $item) : NULL,
-                      'url' => url('viewer/' . $item->id),
-                     );
+      'title' => metadata($item, array('Dublin Core', 'Title')),
+      'item_type_id' => $item->item_type_id,
+      'item_type_name' => $itemTypeName,
+      'item_type_slug' => $itemTypeSlug,
+      'image_markup' => metadata($item, 'has files') ? lazy_load_image('square_thumbnail', $item) : NULL,
+      'url' => url('viewer/' . $item->id),
+    );
     if (!array_key_exists($itemTypeSlug, $itemTypeArray)) {
       $itemTypeArray[$itemTypeSlug] = array($itemResult);
-
     } else {
       array_push($itemTypeArray[$itemTypeSlug], $itemResult);
     }
@@ -191,7 +221,7 @@ function osd_viewer_layout_link($attachment, $imageType)
   }
 
   if (isset($html)) {
-      $html .= osd_exhibit_attachment_caption($attachment);
+    $html .= osd_exhibit_attachment_caption($attachment);
   }
 
   return apply_filters('exhibit_attachment_markup', $html, compact('attachment', 'fileOptions', 'linkProps', 'forceImage'));
@@ -199,7 +229,7 @@ function osd_viewer_layout_link($attachment, $imageType)
 
 function validate_extensions($files, $extensions)
 {
-  foreach($files as $file) {
+  foreach ($files as $file) {
     $ext = strtolower(pathinfo($file->original_filename, PATHINFO_EXTENSION));
     if (in_array($ext, $extensions)) {
       return TRUE;
@@ -220,14 +250,17 @@ function osd_exhibit_attachment_gallery($attachments, $fileOptions = array(), $l
     $html .= '</div>';
   }
 
-  return apply_filters('exhibit_attachment_gallery_markup', $html,
-    compact('attachments', 'fileOptions', 'linkProps'));
+  return apply_filters(
+    'exhibit_attachment_gallery_markup',
+    $html,
+    compact('attachments', 'fileOptions', 'linkProps')
+  );
 }
 
 function osd_exhibit_attachment_caption($attachment)
 {
   if (!is_string($attachment['caption']) || $attachment['caption'] == '') {
-            return '';
+    return '';
   }
   $html = '<div class="exhibit-item-caption">'
     . $attachment['caption']

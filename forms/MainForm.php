@@ -18,6 +18,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     $this->_addCheckboxElement();
     $this->_addFileElement();
     $this->_addItemTypeDropdown();
+    $this->_addTranscriptionFieldDropdown();
     $this->_addSubmit();
     $this->_addSave();
     $this->applyOmekaStyles();
@@ -32,17 +33,16 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     $fileValidators[] = $extensionValidator;
 
     $this->addElement('file', 'xsl_file', array(
-        'label' => __('Upload SEF Transformation'),
-        'required' => false,
-        'validators' => $fileValidators,
-        'description' => 'Upload a file to transform associated TEI files.',
-        'destination' => TRANSFORMATION_DIRECTORY_SYSTEM,
+      'label' => __('Upload SEF Transformation'),
+      'required' => false,
+      'validators' => $fileValidators,
+      'description' => 'Upload a file to transform associated TEI files.',
+      'destination' => TRANSFORMATION_DIRECTORY_SYSTEM,
     ));
-
   }
   protected function _overrideItemsShowElement()
   {
-    $this->addElement('checkbox', 'override_items_show_option', array (
+    $this->addElement('checkbox', 'override_items_show_option', array(
       'label' => __('Override Items Show Template'),
       'description' => 'Check this box to override the current theme\'s items show template.
                         Leaving it unchecked will create views at mysite/viewer/itemtype/itemid.',
@@ -53,7 +53,7 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
   protected function _addCheckboxElement()
   {
     $this->addElement('checkbox', 'xsl_viewer_option', array(
-      'label' => __('Use an SEF File for Rendering'),
+      'label' => __('Use an SEF File for Rendering (Optional)'),
       'description' => 'Check this box to add a rendering component for attached XML files.',
       'checked_value' => 1,
       'unchecked_value' => 0,
@@ -68,33 +68,41 @@ class OpenSeadragonTEI_Form_Main extends Omeka_Form_Admin
     ));
   }
 
-   protected function _addItemTypeDropdown()
-   {
-     $db = get_db();
-     $itemTypeTable = $db->ItemType;
-     $sql = $db->query("SELECT DISTINCT id, name FROM `{$db->prefix}item_types`");
-     $results = $sql->fetchAll();
-     $itemTypes = array();
-     foreach($results as $result){
-       $itemTypes[$result['id']] = $result['name'];
-     }
+  protected function _addItemTypeDropdown()
+  {
+    $db = get_db();
+    $itemTypeTable = $db->ItemType;
+    $sql = $db->query("SELECT DISTINCT id, name FROM `{$db->prefix}item_types`");
+    $results = $sql->fetchAll();
+    $itemTypes = array();
+    foreach ($results as $result) {
+      $itemTypes[$result['id']] = $result['name'];
+    }
 
-     // Add ability to select item type
-     $this->addElement('select', 'item_type', array(
-       'label' => 'Select Item Type to Apply the Viewer to.',
-       'multiOptions' => $itemTypes
-     ));
-   }
-
-   protected function _addSubmit()
-   {
-     $this->addElement('submit', 'save', array('label' => 'Save'));
-   }
-
-   protected function _addSave()
-   {
-     $this->setAction(url('open-seadragon-tei/index/save'))
-     ->setMethod('post');
-   }
-
+    // Add ability to select item type
+    $this->addElement('select', 'item_type', array(
+      'label' => 'Select Item Type to Apply the Viewer to.',
+      'multiOptions' => $itemTypes,
+    ));
   }
+
+  protected function _addTranscriptionFieldDropdown()
+  {
+    $fields = open_seadragon_tei_get_all_fieldnames();
+    $this->addElement('select', 'transcriptions_field_id', array(
+      'label' => 'Transcriptions Field (Optional)',
+      'multiOptions' => $fields,
+    ));
+  }
+
+  protected function _addSubmit()
+  {
+    $this->addElement('submit', 'save', array('label' => 'Save'));
+  }
+
+  protected function _addSave()
+  {
+    $this->setAction(url('open-seadragon-tei/index/save'))
+      ->setMethod('post');
+  }
+}

@@ -9,7 +9,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
     this.osdViewerType = viewerSettings['osdViewer'];
     this.audioFile = viewerSettings['audio'];
     this.anchor = viewerSettings['anchor'];
-
+    console.log(viewerSettings);
   this.openSeadragonInit = function(){
 
     this.viewer = OpenSeadragon({
