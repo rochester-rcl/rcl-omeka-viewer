@@ -92,7 +92,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           'viewer' => $videoViewer,
         ));
       } else {
-        $viewerName = strtolower($viewer['viewer_name']);
+        $viewerName = strtolower($viewer->viewer_name);
         $viewerNameClean = str_replace(' ', '-', $viewerName);
         $openSeadragonViewer = array(
           'name' => $viewerNameClean,
@@ -104,9 +104,10 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
           'tempImage' => html_escape($validFiles['images'][0]->getWebPath('original')),
           'osdViewer' => 'image',
           'page' => $page,
+          'title' => $this->getTitle($item),
         );
-        if ($viewer['xsl_viewer_option'] == 1) {
-          $openSeadragonViewer['xslURL'] = html_escape(open_seadragon_tei_generate_upload_web_path($viewer['xsl_url']));
+        if ($viewer->xsl_viewer_option == 1) {
+          $openSeadragonViewer['xslURL'] = html_escape(open_seadragon_tei_generate_upload_web_path($viewer->xsl_url));
           $openSeadragonViewer['osdViewer'] = 'tei';
           $openSeadragonViewer['anchor'] = $anchor;
           if ($validFiles['xml']) {
@@ -135,10 +136,9 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
       if ($item_type_id === null) return;
       $viewer = open_seadragon_tei_get_viewer($item_type_id);
       if (!$viewer) {
-        return;
+        return null;
       } else {
         $this->_viewer = $viewer;
-        return $viewer[0];
       }
     }
     return $this->_viewer;
@@ -171,27 +171,29 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
   public function getTranscription($item)
   {
     $viewer = $this->getViewer();
-    $element_name = get_element_name($viewer["transcriptions_field_id"]);
-    var_dump($element_name);
-    die;
+    $element_name = get_element_name($viewer->transcriptions_field_id);
     // try for Dublin Core first
     try {
       $transcription = metadata($item, ['Dublin Core', $element_name]);
       return $transcription;
     } catch(Exception $e) {
-      $transcription = metadata($item, ['Item Type Metadata', $element_name]);
+      $transcription = metadata($item, ['Item Type Metadata', $element_name], ['all' => true]);
       return $transcription;
-    } finally {
+    } catch(Exception $e) {
       return null;
     }
-  
+    return null;
+  }
+
+  public function getTitle($item) {
+    return metadata($item, array('Dublin Core', 'Title'));
   }
 
   public function getMetadata($item)
   {
     $escapedMetadata = '';
     // Add the title
-    $escapedMetadata .= '<h2 class="item-meta-head" id="item-meta-title">' . metadata($item, array('Dublin Core', 'Title')) . '</h2>';
+    $escapedMetadata .= '<h2 class="item-meta-head" id="item-meta-title">' . $this->getTitle($item) . '</h2>';
     $meta = all_element_texts($item, array('return_type' => 'array'));
     foreach ($meta as $key => $value) {
       foreach ($value as $title => $meta) {

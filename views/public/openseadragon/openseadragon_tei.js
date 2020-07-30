@@ -1,16 +1,17 @@
-var OpenSeadragonTEIViewer = function(viewerSettings) {
-    this.name = viewerSettings['name'];
-    this.buttonPath = viewerSettings['buttonPath'];
-    this.tileSources = viewerSettings['tileSources'];
-    this.xslURL = viewerSettings['xslURL'];
-    this.xmlURL = viewerSettings['xmlURL'];
-    this.metadata = viewerSettings['metadata'];
-    this.imageCount = viewerSettings['imageCount'];
-    this.osdViewerType = viewerSettings['osdViewer'];
-    this.audioFile = viewerSettings['audio'];
-    this.anchor = viewerSettings['anchor'];
-    console.log(viewerSettings);
-  this.openSeadragonInit = function(){
+var OpenSeadragonTEIViewer = function (viewerSettings) {
+  this.name = viewerSettings['name'];
+  this.buttonPath = viewerSettings['buttonPath'];
+  this.tileSources = viewerSettings['tileSources'];
+  this.xslURL = viewerSettings['xslURL'];
+  this.xmlURL = viewerSettings['xmlURL'];
+  this.metadata = viewerSettings['metadata'];
+  this.imageCount = viewerSettings['imageCount'];
+  this.osdViewerType = viewerSettings['osdViewer'];
+  this.audioFile = viewerSettings['audio'];
+  this.anchor = viewerSettings['anchor'];
+  this.transcription = viewerSettings['transcription'];
+  this.title = viewerSettings['title'];
+  this.openSeadragonInit = function () {
 
     this.viewer = OpenSeadragon({
       id: this.name,
@@ -22,20 +23,20 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
       referenceStripPosition: "BOTTOM_LEFT",
       referenceStripScroll: 'vertical',
       referenceStripSizeRatio: 0.05,
-      showNavigator:  true,
-      navigatorAutoFade:  true,
+      showNavigator: true,
+      navigatorAutoFade: true,
       tileSources: this.tileSources,
       toolbar: "viewer-controls",
-      zoomInButton:   "zoom-in",
-      zoomOutButton:  "zoom-out",
-      homeButton:     "home",
-      nextButton:     "next",
+      zoomInButton: "zoom-in",
+      zoomOutButton: "zoom-out",
+      homeButton: "home",
+      nextButton: "next",
       previousButton: "previous",
       navigatorPosition: "ABSOLUTE",
-      navigatorTop:      "60px",
-      navigatorLeft:     this.tileSources.length > 1 ? "100px" : "10px",
-      navigatorHeight:   "12%",
-      navigatorWidth:    "12%",
+      navigatorTop: "60px",
+      navigatorLeft: this.tileSources.length > 1 ? "100px" : "10px",
+      navigatorHeight: "12%",
+      navigatorWidth: "12%",
       gestureSettingsMouse: {
         pinchToZoom: true,
       }
@@ -43,15 +44,15 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
 
   }
 
-  this.paginatorInit = function(imageCount){
-    if(this.osdViewerType === 'tei') {
+  this.paginatorInit = function (imageCount) {
+    if (this.osdViewerType === 'tei' || this.transcription) {
       this.viewer.addHandler("page", function (data) {
         var pages = document.getElementsByClassName('pb');
         var pageCount = document.getElementById('page-count');
-        for(var i = 0; i < pages.length; i++){
+        for (var i = 0; i < pages.length; i++) {
           var pageNumber = pages[i].dataset.pageNumber;
 
-          if (pageNumber == data.page){
+          if (pageNumber == data.page) {
             pages[i].style.display = 'block';
           } else {
             pages[i].style.display = 'none';
@@ -67,7 +68,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
     }
   }
 
-  this.addAudioPlayer = function() {
+  this.addAudioPlayer = function () {
     var toolbar = document.getElementById('viewer-controls');
     var audioPlayer = document.createElement('audio');
     audioPlayer.className = 'rej-audio';
@@ -108,20 +109,20 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
     toolbar.appendChild(audioPlayer);
 
     function togglePlay() {
-      playButton.addEventListener('click', function() {
+      playButton.addEventListener('click', function () {
         if (!audioPlayer.paused) {
-            audioPlayer.pause();
-            playButton.innerHTML = '<i class="fa fa-play fa-2x" aria-hidden="true"></i>';
+          audioPlayer.pause();
+          playButton.innerHTML = '<i class="fa fa-play fa-2x" aria-hidden="true"></i>';
         } else {
-            audioPlayer.play();
-            playButton.innerHTML = '<i class="fa fa-pause fa-2x" aria-hidden="true"></i>';
+          audioPlayer.play();
+          playButton.innerHTML = '<i class="fa fa-pause fa-2x" aria-hidden="true"></i>';
         }
       }, false);
     }
 
     function updateProgress() {
       var value = 0;
-      audioPlayer.addEventListener("timeupdate", function(){
+      audioPlayer.addEventListener("timeupdate", function () {
         var progressValue = 0;
         var currentTime = audioPlayer.currentTime;
         var duration = audioPlayer.duration;
@@ -142,7 +143,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
 
     function seekProgress() {
       var width = audioProgressWidth;
-      audioProgress.addEventListener("click", function(event){
+      audioProgress.addEventListener("click", function (event) {
         var value = Math.floor((event.offsetX / width) * 100);
         var seekTime = audioPlayer.duration * (value / 100);
         innerProgress.style.width = value + '%';
@@ -158,8 +159,8 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
       var timecodeArray = [hours, minutes, seconds];
       var processedTimecodeArray = [];
 
-      timecodeArray.forEach(function(time) {
-        if(time < 10){
+      timecodeArray.forEach(function (time) {
+        if (time < 10) {
           var timeString = "0" + time;
           processedTimecodeArray.push(timeString);
         } else {
@@ -167,72 +168,71 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
           processedTimecodeArray.push(timeString);
         }
       });
-      return(processedTimecodeArray.join(':'));
+      return (processedTimecodeArray.join(':'));
     }
   }
 
-/***** STATIC METHODS *****/
-OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewerId, callback) {
-  var checkSaxon = function(callback) {
-    if (window.SaxonJS !== undefined) {
-      callback();
-    } else {
-      setTimeout(function() {
-        checkSaxon(callback);
-      }, 100);
-    }
+  OpenSeadragonTEIViewer.onTextReady = function (text) {
+    // Set up metadata display
+    // Set up TEI display
+    var viewer = document.getElementById('osd-flex-container');
+    var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(text);
+    viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
   }
-  // No point in catching errors as SaxonJS.transform is async and has no onError callback and Promises still aren't supported across all browsers
-  var onSaxonLoad = function() {
+
+  /***** STATIC METHODS *****/
+  OpenSeadragonTEIViewer.saxonInit = function (xslURL, xmlURL, itemMetadata, viewerId, callback) {
+    var checkSaxon = function (callback) {
+      if (window.SaxonJS !== undefined) {
+        callback();
+      } else {
+        setTimeout(function () {
+          checkSaxon(callback);
+        }, 100);
+      }
+    }
+    // No point in catching errors as SaxonJS.transform is async and has no onError callback and Promises still aren't supported across all browsers
+    var onSaxonLoad = function () {
       // Parse Attached XML
       /*var xsl = SaxonJS.requestXML(xslURL);
       var xml = SaxonJS.requestXML(xmlURL);
       var transformed = OpenSeadragonTEIViewer.transformToHTML(xml, xsl);*/
-        SaxonJS.transform({
-          stylesheetLocation: xslURL,
-          sourceLocation: xmlURL,
-        }, function(result) {
-            let toString = new XMLSerializer().serializeToString(result);
-
-            // Set up metadata display
-            var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
-            // Set up TEI display
-            var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(toString);
-
-            var container = document.createElement('div');
-            container.className = 'tei-container';
-            var toolbar = document.getElementById('viewer-controls');
-            toolbar.appendChild(metadataPanel.metadataToggleButton);
-            toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
-
-            var viewer = document.getElementById('osd-flex-container');
-
-            viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
-            viewer.appendChild(metadataPanel.metadataElement);
-            //var viewer = document.getElementsByClassName('openseadragon');
-            //viewer.appendChild(container);
-            //viewer.insertBefore(container, viewer.childNodes[0]);
-            OpenSeadragonTEIViewer.prepareViewerFirstPage();
-            var personElements = document.getElementsByClassName('persname-popover');
-            var placeElements = document.getElementsByClassName('placename-popover');
-            OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
-            OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
-            OpenSeadragonTEIViewer.removeLoadingScreen();
-            if (callback) callback();
-        });
-      }
+      SaxonJS.transform({
+        stylesheetLocation: xslURL,
+        sourceLocation: xmlURL,
+      }, function (result) {
+        let toString = new XMLSerializer().serializeToString(result);
+        var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
+        var viewer = document.getElementById('osd-flex-container');
+        OpenSeadragonTEIViewer.onTextReady(toString);
+        var toolbar = document.getElementById('viewer-controls');
+        toolbar.appendChild(metadataPanel.metadataToggleButton);
+        toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
+        viewer.appendChild(metadataPanel.metadataElement);
+        //var viewer = document.getElementsByClassName('openseadragon');
+        //viewer.appendChild(container);
+        //viewer.insertBefore(container, viewer.childNodes[0]);
+        OpenSeadragonTEIViewer.prepareViewerFirstPage();
+        var personElements = document.getElementsByClassName('persname-popover');
+        var placeElements = document.getElementsByClassName('placename-popover');
+        OpenSeadragonTEIViewer.formatModal(personElements, 'persname');
+        OpenSeadragonTEIViewer.formatModal(placeElements, 'placename');
+        OpenSeadragonTEIViewer.removeLoadingScreen();
+        if (callback) callback();
+      });
+    }
     OpenSeadragonTEIViewer.setLoadingScreen();
     checkSaxon(onSaxonLoad);
   }
 
-  OpenSeadragonTEIViewer.formatModal = function(elements, displayType) {
-    for(var i = 0; i < elements.length; i++) {
+  OpenSeadragonTEIViewer.formatModal = function (elements, displayType) {
+    for (var i = 0; i < elements.length; i++) {
       var element = elements[i];
-      element.onclick = function() {
+      element.onclick = function () {
         createModal(this);
       }
     }
-    var createModal = function(element) {
+    var createModal = function (element) {
       var modalDisplay = document.createElement('div');
       var modalTitle = document.createElement('h3');
       var modalContent = document.createElement('div');
@@ -244,76 +244,86 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       closeButton.className = "modal-close";
       closeButton.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
 
-      setTimeout(function() {
+      setTimeout(function () {
         modalDisplay.classList.add('show');
       }, 50);
 
       modalDisplay.classList.add(displayType);
-      modalDisplay.addEventListener("transitionend", function(event) {
+      modalDisplay.addEventListener("transitionend", function (event) {
         var parent = modalDisplay.parentElement;
-        if(modalDisplay.classList.contains('remove')){
-           parent.removeChild(modalDisplay);
+        if (modalDisplay.classList.contains('remove')) {
+          parent.removeChild(modalDisplay);
         }
       });
 
-      closeButton.onclick = function() {
+      closeButton.onclick = function () {
         modalDisplay.classList.remove('show');
         modalDisplay.classList.add('remove');
       }
       modalDisplay.appendChild(modalTitle);
       modalDisplay.appendChild(closeButton);
 
-      if ('birth' && 'death' in element.dataset){
+      if ('birth' && 'death' in element.dataset) {
         var life = element.dataset.birth + '-' + element.dataset.death;
         element.removeAttribute('data-birth');
         element.removeAttribute('data-death');
         element.setAttribute('data-life', life);
       }
 
-      for (var key in element.dataset){
-          if (key == 'trigger' || key == 'toggle'){
+      for (var key in element.dataset) {
+        if (key == 'trigger' || key == 'toggle') {
+        } else {
+          var camelToHyphen = key.replace(/([a-z])([A-Z])/g, function (match1, match2, match3) { return match2 + '-' + match3 }).toLowerCase();
+          var modalMetadata = document.createElement('div');
+          modalMetadata.className = 'modal-metadata ' + camelToHyphen;
+          if (camelToHyphen.indexOf('more-link') >= 0) {
+            var link = document.createElement('a');
+            link.href = element.dataset[key];
+            var linkText = document.createTextNode('More...');
+            link.appendChild(linkText);
+            link.target = 'blank';
+            modalMetadata.appendChild(link);
+          } else if (camelToHyphen.indexOf('tree-link') >= 0) {
+            var link = document.createElement('a');
+            link.href = element.dataset[key];
+            var linkText = document.createTextNode('Family Tree');
+            link.appendChild(linkText);
+            link.target = 'blank';
+            modalMetadata.appendChild(link);
+          } else if (camelToHyphen.indexOf('geo') >= 0) {
+            var iFrame = document.createElement('iframe');
+            iFrame.width = 200;
+            iFrame.height = 200;
+            iFrame.frameborder = 0;
+            var coords = element.dataset[key].split(' ');
+            var lat = parseFloat(coords[0]).toFixed(7);
+            var long = parseFloat(coords[1]).toFixed(7);
+            iFrame.src = 'https://google.com/maps/embed/v1/place?key=AIzaSyAtYvdDAGkHB66xx6cHO3Dqxzwe1Dnz8-4&q=' + lat + ',' + long;
+            console.log(iFrame.src);
+            modalMetadata.appendChild(iFrame);
           } else {
-            var camelToHyphen = key.replace(/([a-z])([A-Z])/g, function(match1, match2, match3){return match2 + '-' + match3}).toLowerCase();
-            var modalMetadata = document.createElement('div');
-            modalMetadata.className = 'modal-metadata ' + camelToHyphen;
-            if (camelToHyphen.indexOf('more-link') >= 0){
-              var link = document.createElement('a');
-              link.href = element.dataset[key];
-              var linkText = document.createTextNode('More...');
-              link.appendChild(linkText);
-              link.target = 'blank';
-              modalMetadata.appendChild(link);
-            } else if (camelToHyphen.indexOf('tree-link') >= 0){
-              var link = document.createElement('a');
-              link.href = element.dataset[key];
-              var linkText = document.createTextNode('Family Tree');
-              link.appendChild(linkText);
-              link.target = 'blank';
-              modalMetadata.appendChild(link);
-            } else if (camelToHyphen.indexOf('geo') >= 0){
-              var iFrame = document.createElement('iframe');
-              iFrame.width = 200;
-              iFrame.height = 200;
-              iFrame.frameborder = 0;
-              var coords = element.dataset[key].split(' ');
-              var lat = parseFloat(coords[0]).toFixed(7);
-              var long = parseFloat(coords[1]).toFixed(7);
-              iFrame.src = 'https://google.com/maps/embed/v1/place?key=AIzaSyAtYvdDAGkHB66xx6cHO3Dqxzwe1Dnz8-4&q=' + lat + ',' + long;
-              console.log(iFrame.src);
-              modalMetadata.appendChild(iFrame);
-            } else {
-              var span = document.createElement('span');
-              span.innerHTML = element.dataset[key];
-              modalMetadata.appendChild(span);
-            }
-            modalDisplay.appendChild(modalMetadata);
+            var span = document.createElement('span');
+            span.innerHTML = element.dataset[key];
+            modalMetadata.appendChild(span);
           }
+          modalDisplay.appendChild(modalMetadata);
+        }
       }
       element.parentElement.appendChild(modalDisplay);
     }
   }
 
-  OpenSeadragonTEIViewer.imageViewerInit = function(itemMetadata, viewerId){
+  OpenSeadragonTEIViewer.simpleTranscriptionInit = function (transcription, title) {
+    var formatted = [];
+    var formattedTitle = title ? `<h2 class="tei-title">${title}</h2>` : "";
+    for (var i = 0; i < transcription.length; i++) {
+      formatted[i] = `<div class="pb" data-page-number="${i}">${formattedTitle}${transcription[i]}</div>`;
+    }
+    var htmlStr = `<div class="simple-transcription tei-viewer" id="item-transcription">${formatted.join("")}</div>`;
+    OpenSeadragonTEIViewer.onTextReady(htmlStr);
+  }
+
+  OpenSeadragonTEIViewer.imageViewerInit = function (itemMetadata, viewerId) {
     var metadataPanel = OpenSeadragonTEIViewer.metadataPanelInit(itemMetadata);
     var container = document.getElementById('osd-flex-container');
     var toolbar = document.getElementById('viewer-controls');
@@ -321,7 +331,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     container.appendChild(metadataPanel.metadataElement);
   }
 
-  OpenSeadragonTEIViewer.transformToHTML = function(xml, xsl){
+  OpenSeadragonTEIViewer.transformToHTML = function (xml, xsl) {
     var processor = Saxon.newXSLT20Processor();
     processor.importStylesheet(xsl);
     var transformed = processor.transformToFragment(xml);
@@ -329,11 +339,11 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     return serialized;
   }
 
-  OpenSeadragonTEIViewer.prepareViewerFirstPage = function(){
+  OpenSeadragonTEIViewer.prepareViewerFirstPage = function () {
     var pages = document.getElementsByClassName('pb');
-    for(var i = 0; i < pages.length; i++){
+    for (var i = 0; i < pages.length; i++) {
       var pageNumber = pages[i].dataset.pageNumber;
-      if (pageNumber == 0){
+      if (pageNumber == 0) {
         pages[i].style.display = 'block';
       } else {
         pages[i].style.display = 'none';
@@ -341,7 +351,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     }
   }
 
-  OpenSeadragonTEIViewer.metadataPanelInit = function(itemMetadata){
+  OpenSeadragonTEIViewer.metadataPanelInit = function (itemMetadata) {
     // Set up metadata display
     var metadata = document.createElement('div');
     metadata.id = 'item-metadata';
@@ -350,16 +360,18 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     var metadataToggle = document.createElement('div');
     metadataToggle.id = 'toggle-metadata';
     metadataToggle.className = 'toolbar-button';
-    metadataToggle.onclick = function() {OpenSeadragonTEIViewer.togglePanel('item-metadata','toggle-metadata', ['Hide Metadata ', 'Show Metadata '],
-                                       ['<i class="fa fa-minus-square" aria-hidden="true"></i>',
-                                       '<i class="fa fa-plus-square" aria-hidden="true"></i>']
-                                       )};
+    metadataToggle.onclick = function () {
+      OpenSeadragonTEIViewer.togglePanel('item-metadata', 'toggle-metadata', ['Hide Metadata ', 'Show Metadata '],
+        ['<i class="fa fa-minus-square" aria-hidden="true"></i>',
+          '<i class="fa fa-plus-square" aria-hidden="true"></i>']
+      )
+    };
     metadataToggle.innerHTML = 'Hide Metadata <i class="fa fa-minus-square" aria-hidden="true"></i>';
-    var metadataPanel = {'metadataElement': metadata, 'metadataToggleButton': metadataToggle};
+    var metadataPanel = { 'metadataElement': metadata, 'metadataToggleButton': metadataToggle };
     return metadataPanel;
   }
 
-  OpenSeadragonTEIViewer.transcriptionPanelInit = function(transformedDOM){
+  OpenSeadragonTEIViewer.transcriptionPanelInit = function (transformedDOM) {
     // Set up viewer display
     var display = document.createElement('div');
     display.className = 'tei-viewer';
@@ -368,21 +380,23 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     var transcriptionToggle = document.createElement('div');
     transcriptionToggle.id = 'toggle-transcription';
     transcriptionToggle.className = 'toolbar-button';
-    transcriptionToggle.onclick = function() {OpenSeadragonTEIViewer.togglePanel("item-transcription", 'toggle-transcription',
-                                            ['Hide Transcription ', 'Show Transcription '],
-                                            ['<i class="fa fa-minus-square" aria-hidden="true"></i>',
-                                            '<i class="fa fa-plus-square" aria-hidden="true"></i>']
-                                            )};
+    transcriptionToggle.onclick = function () {
+      OpenSeadragonTEIViewer.togglePanel("item-transcription", 'toggle-transcription',
+        ['Hide Transcription ', 'Show Transcription '],
+        ['<i class="fa fa-minus-square" aria-hidden="true"></i>',
+          '<i class="fa fa-plus-square" aria-hidden="true"></i>']
+      )
+    };
 
     transcriptionToggle.innerHTML = '<span id="transcription-dialogue">Hide Transcription </span><i class="fa fa-minus-square" aria-hidden="true"></i>';
-    var transcriptionPanel = {'transcriptionElement': display, 'transcriptionToggleButton': transcriptionToggle};
+    var transcriptionPanel = { 'transcriptionElement': display, 'transcriptionToggleButton': transcriptionToggle };
     return transcriptionPanel;
   }
 
-  OpenSeadragonTEIViewer.togglePanel = function(panelId, toggleId, dialogString, fontAwesomeTags){
+  OpenSeadragonTEIViewer.togglePanel = function (panelId, toggleId, dialogString, fontAwesomeTags) {
     panel = document.getElementById(panelId);
     toggleDialogue = document.getElementById(toggleId);
-    if (panel.classList.contains('hidden')){
+    if (panel.classList.contains('hidden')) {
       //panel.style.visibility = 'visible';
       panel.classList.remove('hidden');
       panel.classList.add('show');
@@ -394,7 +408,7 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
       toggleDialogue.innerHTML = '<span id="transcription-dialogue">' + dialogString[1] + '</span>' + fontAwesomeTags[1];
     }
   }
-  OpenSeadragonTEIViewer.setLoadingScreen = function() {
+  OpenSeadragonTEIViewer.setLoadingScreen = function () {
     var primary = document.getElementById('viewer-fullpage-container');
     var loadingOverlay = document.createElement('div');
     var loadingMessage = document.createElement('div');
@@ -404,18 +418,18 @@ OpenSeadragonTEIViewer.saxonInit = function(xslURL, xmlURL, itemMetadata, viewer
     loadingMessage.innerHTML = '<div class="viewer-loader"></div>';
     loadingOverlay.appendChild(loadingMessage);
     primary.appendChild(loadingOverlay);
-    setTimeout(function() {
+    setTimeout(function () {
       loadingOverlay.classList.add('show');
     }, 50);
   }
 
-  OpenSeadragonTEIViewer.removeLoadingScreen = function() {
+  OpenSeadragonTEIViewer.removeLoadingScreen = function () {
     var loadingOverlay = document.getElementById('loading-overlay-container');
-    loadingOverlay.addEventListener("transitionend", function(event) {
+    loadingOverlay.addEventListener("transitionend", function (event) {
       var parent = loadingOverlay.parentElement;
-      if(parent) {
-        if(loadingOverlay.classList.contains('remove')){
-           parent.removeChild(loadingOverlay);
+      if (parent) {
+        if (loadingOverlay.classList.contains('remove')) {
+          parent.removeChild(loadingOverlay);
         }
       }
     });

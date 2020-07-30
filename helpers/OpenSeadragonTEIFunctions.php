@@ -40,11 +40,8 @@ function open_seadragon_tei_get_all_fieldnames($include_name = true)
 function get_element_name($element_id)
 {
   $db = get_db();
-  // TODO need to figure out how to do findBy Id
-  $elements = $db->getTable('Element')->findBy(["id" => $element_id]);
-  var_dump($elements);
-  die;
-  if ($elements) return $elements[0]->name;
+  $element = $db->getTable('Element')->find($element_id);
+  if ($element) return $element->name;
   return null;
 }
 
@@ -52,16 +49,10 @@ function open_seadragon_tei_get_viewer($item_type_id)
 {
   if ($item_type_id) {
     $db = get_db();
-    $select = $db->select()
-      ->from($db->prefix . 'open_seadragon_tei_viewers')
-      ->where('item_type_id = ' . $item_type_id);
-
-    $stmt = $db->query($select);
-    $result = $stmt->fetchAll();
-
-    return $result;
+    $viewer = $db->getTable('OpenSeadragonTEIViewer')->findBy(['item_type_id' => $item_type_id]);
+    if ($viewer) return $viewer[0];
   } else {
-    return array();
+    return null;
   }
 }
 
