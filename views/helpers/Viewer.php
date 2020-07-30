@@ -191,12 +191,14 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
 
   public function getMetadata($item)
   {
+    $viewer = $this->getViewer();
     $escapedMetadata = '';
     // Add the title
     $escapedMetadata .= '<h2 class="item-meta-head" id="item-meta-title">' . $this->getTitle($item) . '</h2>';
     $meta = all_element_texts($item, array('return_type' => 'array'));
     foreach ($meta as $key => $value) {
       foreach ($value as $title => $meta) {
+        if ($title === get_element_name($viewer->transcriptions_field_id)) continue;
         $escapedMetadata .= '<span class="item-metadata-element"><h4 class="item-meta-head">'
           . $title . '</h4>';
         foreach ($meta as $md) {
