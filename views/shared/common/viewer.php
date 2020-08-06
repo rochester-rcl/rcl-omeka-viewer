@@ -89,7 +89,7 @@
             if (osdViewer.audioFile !== null) {
               osdViewer.addAudioPlayer();
             }
-            if (osdViewer.transcription) {
+            if (osdViewer.transcription && osdViewer.transcription.length > 0) {
               OpenSeadragonTEIViewer.simpleTranscriptionInit(osdViewer.transcription, osdViewer.title);
             }
             OpenSeadragonTEIViewer.imageViewerInit(osdViewer.metadata, osdViewer.name);

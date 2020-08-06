@@ -178,6 +178,8 @@ var OpenSeadragonTEIViewer = function (viewerSettings) {
     var viewer = document.getElementById('osd-flex-container');
     var transcriptionPanel = OpenSeadragonTEIViewer.transcriptionPanelInit(text);
     viewer.insertBefore(transcriptionPanel.transcriptionElement, viewer.firstChild);
+    var toolbar = document.getElementById('viewer-controls');
+    toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
   }
 
   /***** STATIC METHODS *****/
@@ -207,7 +209,7 @@ var OpenSeadragonTEIViewer = function (viewerSettings) {
         OpenSeadragonTEIViewer.onTextReady(toString);
         var toolbar = document.getElementById('viewer-controls');
         toolbar.appendChild(metadataPanel.metadataToggleButton);
-        toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
+        // toolbar.appendChild(transcriptionPanel.transcriptionToggleButton);
         viewer.appendChild(metadataPanel.metadataElement);
         //var viewer = document.getElementsByClassName('openseadragon');
         //viewer.appendChild(container);
