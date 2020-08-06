@@ -172,6 +172,7 @@ class OpenSeadragonTEI_View_Helper_Viewer extends Zend_View_Helper_Abstract
   {
     $viewer = $this->getViewer();
     $element_name = get_element_name($viewer->transcriptions_field_id);
+    if (!$element_name) return null;
     // try for Dublin Core first
     try {
       $transcription = metadata($item, ['Dublin Core', $element_name]);

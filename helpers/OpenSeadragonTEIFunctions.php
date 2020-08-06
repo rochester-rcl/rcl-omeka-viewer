@@ -26,7 +26,7 @@ function open_seadragon_tei_get_all_fieldnames($include_name = true)
   $dcElements = $db->getTable('Element')->findBySet('Dublin Core');
   $itemTypeElements = $db->getTable('Element')->findBySet('Item Type Metadata');
   $results = array_merge($dcElements, $itemTypeElements);
-  $fields = [];
+  $fields = [0 => 'None'];
   foreach ($results as $result) {
     if ($include_name) {
       $fields[$result->id] = $result->name;
