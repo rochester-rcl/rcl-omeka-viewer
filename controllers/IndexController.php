@@ -136,7 +136,7 @@ class OpenSeadragonTEI_IndexController extends Omeka_Controller_AbstractActionCo
             return;
         }
         $form->xsl_file->receive();
-        if($form->xsl_file->isValid()){
+        if($form->xsl_file->isValid(null)){
           $filename = $form->xsl_file->getFilename();
           var_dump($filename);
         } else {

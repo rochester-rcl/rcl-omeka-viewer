@@ -36,6 +36,7 @@ var OpenSeadragonTEIViewer = function(viewerSettings) {
       navigatorLeft:     this.tileSources.length > 1 ? "100px" : "10px",
       navigatorHeight:   "12%",
       navigatorWidth:    "12%",
+      minPixelRatio: 0.25,	    
       gestureSettingsMouse: {
         pinchToZoom: true,
       }
